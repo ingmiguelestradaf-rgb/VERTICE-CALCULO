@@ -1,0 +1,590 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#1d2328">
+<title>Vértice Cálculo</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Hoja de cálculo de despacho: banda oscura con pestañas, tarjetas de datos a la izquierda y resultados con dibujo a la derecha */
+:root{
+  --bg:#eef0f1; --surface:#ffffff; --sunk:#e3e6e8; --line:#cdd2d6;
+  --fg:#1d2328; --muted:#5b656e; --accent:#e2a300; --accent-ink:#1d2328;
+  --link:#1f5f8b; --ok:#2e7d4f; --warn:#a86400; --bad:#b23b2e;
+  --chip-ok:#dcefe3; --chip-warn:#f6e6c8; --chip-bad:#f4dbd7;
+  --steel:#b23b2e; --tie:#8e44ad; --conc:#1d2328; --axis:#8a939b; --grid:#e3e6e8; --s1:#1f5f8b; --s2:#2e7d4f;
+  --f-display:"Barlow Condensed","Arial Narrow",Arial,sans-serif;
+  --f-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#15191c; --surface:#1d2226; --sunk:#252b30; --line:#343c42;
+  --fg:#e6e9eb; --muted:#9aa4ac; --accent:#f0b520; --accent-ink:#15191c;
+  --link:#7fb6dc; --ok:#6cc28f; --warn:#e9b25a; --bad:#ec8b7e;
+  --chip-ok:#1f3a2a; --chip-warn:#3d3018; --chip-bad:#45241f;
+  --steel:#ec8b7e; --tie:#c39bd3; --conc:#e6e9eb; --axis:#7d878f; --grid:#2c3338; --s1:#7fb6dc; --s2:#6cc28f; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#15191c; --surface:#1d2226; --sunk:#252b30; --line:#343c42;
+  --fg:#e6e9eb; --muted:#9aa4ac; --accent:#f0b520; --accent-ink:#15191c;
+  --link:#7fb6dc; --ok:#6cc28f; --warn:#e9b25a; --bad:#ec8b7e;
+  --chip-ok:#1f3a2a; --chip-warn:#3d3018; --chip-bad:#45241f;
+  --steel:#ec8b7e; --tie:#c39bd3; --conc:#e6e9eb; --axis:#7d878f; --grid:#2c3338; --s1:#7fb6dc; --s2:#6cc28f; color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:15px;line-height:1.5}
+a{color:var(--link)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.band{position:sticky;top:0;z-index:5;background:#1d2328;color:#eef0f1}
+.band .wrap{padding-block:12px 0;display:grid;gap:8px}
+.brand{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.brand h1{font-family:var(--f-display);font-weight:700;font-size:28px;letter-spacing:.02em;margin:0;text-transform:uppercase;line-height:1}
+.brand h1 span{color:#e2a300}
+.brand small{font-size:12px;opacity:.75}
+.tabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+.tabs button{flex:none;font:600 15px var(--f-display);letter-spacing:.06em;text-transform:uppercase;padding:8px 12px;border:0;background:transparent;color:inherit;opacity:.65;cursor:pointer;border-bottom:3px solid transparent}
+.tabs button[aria-selected="true"]{opacity:1;border-bottom-color:#e2a300}
+main.wrap{padding-block:18px 48px;display:grid;gap:16px}
+.panel{display:grid;gap:14px}
+.panel[hidden]{display:none}
+.intro{font-size:13.5px;color:var(--muted);max-width:80ch;margin:0}
+.grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:16px;align-items:start}
+@media (max-width:860px){.grid2{grid-template-columns:minmax(0,1fr)}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:14px;display:grid;gap:12px;align-content:start;min-width:0}
+h2.h{font-family:var(--f-display);font-weight:600;font-size:20px;letter-spacing:.03em;text-transform:uppercase;margin:0}
+h3.sub{font-family:var(--f-display);font-weight:600;font-size:15px;letter-spacing:.05em;text-transform:uppercase;margin:4px 0 0;color:var(--muted)}
+.fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media (max-width:520px){.fields{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.field{display:grid;gap:3px;font-size:12px;color:var(--muted);min-width:0}
+.field input,.field select,textarea{width:100%;padding:7px 8px;border:1px solid var(--line);border-radius:5px;background:var(--bg);color:var(--fg);font:14px var(--f-mono)}
+.field select{font-family:var(--f-body)}
+textarea{min-height:90px;resize:vertical;font-size:13px}
+.field .u{color:var(--muted);font-size:11px}
+.ledger{width:100%;border-collapse:collapse;font-size:13.5px}
+.ledger td{padding:6px 4px;border-bottom:1px solid var(--line);vertical-align:top}
+.ledger td.n{text-align:right;font-family:var(--f-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.ledger td .ref{display:block;font-size:11px;color:var(--muted)}
+.ledger tr.tot td{font-weight:600;font-size:15px;border-bottom:0}
+.verdict{padding:10px 12px;border-radius:5px;font-size:14px;font-weight:500}
+.verdict.ok{background:var(--chip-ok);color:var(--ok)}
+.verdict.bad{background:var(--chip-bad);color:var(--bad)}
+.verdict.warn{background:var(--chip-warn);color:var(--warn)}
+.notes{margin:0;padding-left:18px;font-size:12.5px;color:var(--muted)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+.kpi{background:var(--sunk);border-radius:5px;padding:8px 10px;font-size:12px;color:var(--muted)}
+.kpi b{display:block;font:600 19px var(--f-mono);color:var(--fg)}
+.fig{width:100%;height:auto;display:block}
+.fig text{font-family:var(--f-mono);font-size:11px;fill:var(--muted)}
+.fig .lbl{fill:var(--fg)}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.btn{font:600 13.5px var(--f-body);padding:7px 12px;border-radius:5px;border:1px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.ghost{background:transparent}
+.btn.x{padding:3px 8px;font-size:12px}
+.tbl-wrap{overflow-x:auto}
+table.ed{width:100%;border-collapse:collapse;font-size:13px}
+table.ed th{font:600 10.5px var(--f-body);letter-spacing:.05em;text-transform:uppercase;color:var(--muted);text-align:left;padding:5px 4px;border-bottom:1px solid var(--line);white-space:nowrap}
+table.ed td{padding:4px;border-bottom:1px solid var(--line)}
+table.ed input,table.ed select{width:100%;min-width:56px;padding:5px 6px;border:1px solid var(--line);border-radius:4px;background:var(--bg);color:var(--fg);font:13px var(--f-mono)}
+table.ed select{font-family:var(--f-body);min-width:64px}
+table.ed select.con{min-width:260px}
+table.ed input:not([type]){min-width:120px;font-family:var(--f-body)}
+table.ed td.n{text-align:right;font-family:var(--f-mono);white-space:nowrap}
+.legend{font-size:12px;color:var(--muted);display:flex;gap:14px;flex-wrap:wrap}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+footer{font-size:12px;color:var(--muted);padding-bottom:24px}
+.small{font-size:12px;color:var(--muted)}
+.disclaimer{font:600 11px var(--f-body);letter-spacing:.06em;text-transform:uppercase;color:var(--bad)}
+@media print{.band,.toolbar,footer,.noprint{display:none!important}body{background:#fff}.card{border:0;padding:0}.panel[hidden]{display:none!important}.print-head{display:block!important}}
+.print-head{display:none;font:600 13px var(--f-body);margin-bottom:8px}
+</style>
+</head>
+<body>
+<header class="band">
+  <div class="wrap">
+    <div class="brand"><h1>Vértice <span>Cálculo</span></h1><small>Ingeniería, Arquitectura y Proyectos · Tijuana, B.C.</small></div>
+    <nav class="tabs" role="tablist" id="tabs">
+      <button role="tab" data-p="trabe" aria-selected="true">Trabe</button>
+      <button role="tab" data-p="columna" aria-selected="false">Columna</button>
+      <button role="tab" data-p="zapata" aria-selected="false">Zapata</button>
+      <button role="tab" data-p="muros" aria-selected="false">Muros</button>
+      <button role="tab" data-p="sismo" aria-selected="false">Sismo</button>
+      <button role="tab" data-p="presupuesto" aria-selected="false">Presupuesto</button>
+      <button role="tab" data-p="programa" aria-selected="false">Programa y flujo</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="print-head">Vértice Ingeniería, Arquitectura y Proyectos — hoja de cálculo · <span id="ph-date"></span> · PARA REVISIÓN Y FIRMA DEL DRO / CORRESPONSABLE EN SEGURIDAD ESTRUCTURAL</div>
+
+  <!-- TRABE -->
+  <section class="panel" id="p-trabe" role="tabpanel">
+    <p class="intro">Diseño de trabe rectangular por flexión y cortante con ACI 318-19 en kg y cm. Escribe los elementos mecánicos últimos (ya factorizados).</p>
+    <div class="grid2">
+      <div class="card">
+        <h2 class="h">Datos</h2>
+        <div class="fields" data-form="trabe"></div>
+        <div class="toolbar"><button class="btn" data-print>Imprimir hoja</button><button class="btn ghost" data-reset="trabe">Valores de ejemplo</button></div>
+      </div>
+      <div class="card">
+        <h2 class="h">Resultado</h2>
+        <div class="verdict" id="t-ver"></div>
+        <div class="kpis" id="t-kpi"></div>
+        <svg class="fig" id="t-svg" viewBox="0 0 520 300" role="img" aria-label="Sección de la trabe con su armado"></svg>
+        <table class="ledger" id="t-led"></table>
+        <ul class="notes" id="t-notes"></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- COLUMNA -->
+  <section class="panel" id="p-columna" role="tabpanel" hidden>
+    <p class="intro">Columna rectangular con estribos: diagrama de interacción P-M por compatibilidad de deformaciones (ACI 318-19 cap. 22) y revisión del punto (Mu, Pu). Barras repartidas en las caras perpendiculares a la flexión.</p>
+    <div class="grid2">
+      <div class="card">
+        <h2 class="h">Datos</h2>
+        <div class="fields" data-form="columna"></div>
+        <div class="toolbar"><button class="btn" data-print>Imprimir hoja</button><button class="btn ghost" data-reset="columna">Valores de ejemplo</button></div>
+      </div>
+      <div class="card">
+        <h2 class="h">Resultado</h2>
+        <div class="verdict" id="c-ver"></div>
+        <div class="kpis" id="c-kpi"></div>
+        <svg class="fig" id="c-svg" viewBox="0 0 520 340" role="img" aria-label="Diagrama de interacción"></svg>
+        <div class="legend"><span><i style="background:var(--s1)"></i>φPn – φMn</span><span><i style="background:var(--axis)"></i>Pn – Mn nominal</span><span><i style="background:var(--bad)"></i>Demanda (Mu, Pu)</span></div>
+        <ul class="notes" id="c-notes"></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ZAPATA -->
+  <section class="panel" id="p-zapata" role="tabpanel" hidden>
+    <p class="intro">Zapata aislada cuadrada bajo columna: área con cargas de servicio y capacidad admisible neta, peralte por punzonamiento y cortante en una dirección, acero por flexión o por temperatura (ACI 318-19 cap. 13 y 22). Sin estudio de mecánica de suelos, la capacidad es un supuesto a validar.</p>
+    <div class="grid2">
+      <div class="card">
+        <h2 class="h">Datos</h2>
+        <div class="fields" data-form="zapata"></div>
+        <div class="toolbar"><button class="btn" data-print>Imprimir hoja</button><button class="btn ghost" data-reset="zapata">Valores de ejemplo</button></div>
+      </div>
+      <div class="card">
+        <h2 class="h">Resultado</h2>
+        <div class="verdict" id="z-ver"></div>
+        <div class="kpis" id="z-kpi"></div>
+        <svg class="fig" id="z-svg" viewBox="0 0 520 260" role="img" aria-label="Planta y corte de la zapata"></svg>
+        <table class="ledger" id="z-led"></table>
+        <ul class="notes" id="z-notes"></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- MUROS -->
+  <section class="panel" id="p-muros" role="tabpanel" hidden>
+    <p class="intro">Método simplificado para mampostería confinada (NTC Mampostería): por dirección, la suma de FAE·VmR debe resistir el cortante sísmico. VmR = FR(0.5·v*m·AT + 0.3P) ≤ 1.5·FR·v*m·AT con FR = 0.7. v*m sale de pruebas o de la tabla de la norma vigente.</p>
+    <div class="grid2">
+      <div class="card">
+        <h2 class="h">Datos</h2>
+        <div class="fields" data-form="muros"></div>
+        <h3 class="sub">Muros</h3>
+        <div class="tbl-wrap"><table class="ed" id="m-tab"></table></div>
+        <div class="toolbar"><button class="btn" id="m-add">Agregar muro</button><button class="btn" data-print>Imprimir hoja</button><button class="btn ghost" data-reset="muros">Valores de ejemplo</button></div>
+      </div>
+      <div class="card">
+        <h2 class="h">Resultado</h2>
+        <div class="kpis" id="m-kpi"></div>
+        <div id="m-ver"></div>
+        <svg class="fig" id="m-svg" viewBox="0 0 520 200" role="img" aria-label="Demanda contra capacidad por dirección"></svg>
+        <table class="ledger" id="m-led"></table>
+      </div>
+    </div>
+  </section>
+
+  <!-- SISMO -->
+  <section class="panel" id="p-sismo" role="tabpanel" hidden>
+    <p class="intro">Método estático: Fi = Wi·hi / ΣWj·hj · (a/Q'R)·ΣW. Pega el espectro de PRODISIS (periodo, aceleración por renglón) o usa la forma paramétrica CFE-2015 solo para estudios previos. Con rigideces de entrepiso calcula el periodo de Rayleigh y las distorsiones.</p>
+    <div class="grid2">
+      <div class="card">
+        <h2 class="h">Datos</h2>
+        <div class="fields" data-form="sismo"></div>
+        <label class="field">Espectro de PRODISIS (opcional): "T, a" por renglón — si lo llenas, sustituye al paramétrico<textarea id="s-pts" placeholder="0, 0.22&#10;0.1, 0.60&#10;0.6, 0.60&#10;1.0, 0.43"></textarea></label>
+        <h3 class="sub">Niveles (de abajo hacia arriba)</h3>
+        <div class="tbl-wrap"><table class="ed" id="s-tab"></table></div>
+        <div class="toolbar"><button class="btn" id="s-add">Agregar nivel</button><button class="btn" data-print>Imprimir hoja</button><button class="btn ghost" data-reset="sismo">Valores de ejemplo</button></div>
+      </div>
+      <div class="card">
+        <h2 class="h">Resultado</h2>
+        <div class="kpis" id="s-kpi"></div>
+        <svg class="fig" id="s-svg" viewBox="0 0 520 260" role="img" aria-label="Espectro elástico y de diseño"></svg>
+        <div class="legend"><span><i style="background:var(--axis)"></i>Elástico a(T)</span><span><i style="background:var(--s1)"></i>Diseño a/(Q'R)</span><span><i style="background:var(--bad)"></i>Periodo de la estructura</span></div>
+        <table class="ledger" id="s-led"></table>
+        <ul class="notes" id="s-notes"></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRESUPUESTO -->
+  <section class="panel" id="p-presupuesto" role="tabpanel" hidden>
+    <p class="intro">Presupuesto con precios unitarios armados con la base de <a href="https://ingmiguelestradaf-rgb.github.io/precios-obra-/" target="_blank" rel="noopener">Precios de Obra MX</a>: materiales ajustados a Tijuana, mano de obra con Factor de Salario Real 2026, herramienta menor 3 % y equipo. Agrega conceptos y cantidades.</p>
+    <div class="grid2">
+      <div class="card">
+        <h2 class="h">Datos</h2>
+        <div class="fields" data-form="presupuesto"></div>
+        <div class="small" id="pr-src">Cargando base de precios…</div>
+      </div>
+      <div class="card">
+        <h2 class="h">Resumen</h2>
+        <div class="kpis" id="pr-kpi"></div>
+        <svg class="fig" id="pr-svg" viewBox="0 0 520 220" role="img" aria-label="Importe por partida"></svg>
+      </div>
+    </div>
+    <div class="card">
+      <h2 class="h">Catálogo de conceptos</h2>
+      <div class="tbl-wrap"><table class="ed" id="pr-tab"></table></div>
+      <div class="toolbar"><button class="btn" id="pr-add">Agregar concepto</button><button class="btn" id="pr-csv">Descargar presupuesto (CSV)</button><button class="btn" data-print>Imprimir</button><button class="btn ghost" data-reset="presupuesto">Ejemplo casa 160 m²</button></div>
+      <p class="small">Precios de referencia: sustitúyelos por cotizaciones antes de contratar. IVA 8 % solo si estás inscrito en el estímulo de la región fronteriza norte.</p>
+    </div>
+  </section>
+
+  <!-- PROGRAMA -->
+  <section class="panel" id="p-programa" role="tabpanel" hidden>
+    <p class="intro">Ruta crítica (CPM) con relaciones fin-inicio, Gantt por semana de 6 días y flujo de caja semanal: anticipo, estimaciones con amortización y fondo de garantía, materiales con crédito de proveedor y nómina semanal. Montos sin IVA.</p>
+    <div class="grid2">
+      <div class="card">
+        <h2 class="h">Esquema de pago</h2>
+        <div class="fields" data-form="programa"></div>
+        <div class="toolbar"><button class="btn" id="pg-fromprice">Usar total del presupuesto</button></div>
+      </div>
+      <div class="card">
+        <h2 class="h">Resultado</h2>
+        <div class="kpis" id="pg-kpi"></div>
+        <svg class="fig" id="pg-flujo" viewBox="0 0 520 240" role="img" aria-label="Flujo de caja semanal"></svg>
+        <div class="legend"><span><i style="background:var(--ok)"></i>Ingresos</span><span><i style="background:var(--bad)"></i>Egresos</span><span><i style="background:var(--fg)"></i>Saldo acumulado</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <h2 class="h">Actividades</h2>
+      <div class="tbl-wrap"><table class="ed" id="pg-tab"></table></div>
+      <div class="toolbar"><button class="btn" id="pg-add">Agregar actividad</button><button class="btn" id="pg-csv">Descargar programa y flujo (CSV)</button><button class="btn" data-print>Imprimir</button><button class="btn ghost" data-reset="programa">Ejemplo casa</button></div>
+      <svg class="fig" id="pg-gantt" viewBox="0 0 1000 300" role="img" aria-label="Diagrama de Gantt"></svg>
+      <div class="legend"><span><i style="background:var(--bad)"></i>Ruta crítica</span><span><i style="background:var(--s1)"></i>Con holgura</span><span><i style="background:var(--line)"></i>Holgura</span></div>
+    </div>
+  </section>
+</main>
+<footer class="wrap">
+  <p class="disclaimer">Para revisión y firma del DRO / Corresponsable en Seguridad Estructural.</p>
+  <p>Misma lógica que el motor en Python de este repositorio (<a href="https://github.com/ingmiguelestradaf-rgb/VERTICE-CALCULO" target="_blank" rel="noopener">VERTICE-CALCULO</a>), que además genera memoria en Word, planos DXF/PDF y Excel. Los datos que escribes se guardan solo en este equipo.</p>
+</footer>
+
+<script>
+"use strict";
+/* ================= motor (port de vertice/*.py) ================= */
+const VAR={2.5:[0.794,0.49,0.384,'5/16"'],3:[0.953,0.71,0.557,'3/8"'],4:[1.27,1.27,0.996,'1/2"'],5:[1.588,1.98,1.56,'5/8"'],6:[1.905,2.85,2.25,'3/4"'],8:[2.54,5.07,3.975,'1"'],10:[3.175,7.92,6.225,'1 1/4"'],12:[3.81,11.4,8.938,'1 1/2"']};
+const ES=2.04e6, sqrt=Math.sqrt;
+const beta1=fc=>fc<=280?0.85:Math.max(0.65,0.85-0.05*(fc-280)/70);
+const phiDef=(et,ey)=>et<=ey?0.65:et>=ey+0.003?0.9:0.65+0.25*(et-ey)/0.003;
+function flexion(Mu,b,d,fc,fy){
+  const notas=[],Rn=Mu/(0.9*b*d*d),disc=1-2*Rn/(0.85*fc);
+  if(disc<=0)return{ok:false,As:NaN,notas:["La sección no alcanza a flexión: aumenta peralte o usa acero de compresión."]};
+  const rho=0.85*fc/fy*(1-sqrt(disc)),Asr=rho*b*d,Asmin=Math.max(0.8*sqrt(fc),14)*b*d/fy;
+  const cmax=0.003/0.008*d,Asmax=0.85*fc*beta1(fc)*cmax*b/fy,As=Math.max(Asr,Asmin);
+  if(Asr<Asmin)notas.push("Rige acero mínimo (ACI 9.6.1.2).");
+  const a=As*fy/(0.85*fc*b),c=a/beta1(fc),et=0.003*(d-c)/c,phi=phiDef(et,fy/ES),phiMn=phi*As*fy*(d-a/2);
+  if(et<0.005)notas.push(`εt = ${et.toFixed(4)} < 0.005: no es tensión controlada, φ = ${phi.toFixed(3)}.`);
+  if(et<0.004)notas.push("εt < 0.004: viola ACI 9.3.3.1; aumenta el peralte.");
+  return{ok:et>=0.004&&phiMn>=Mu*0.999,Asr,Asmin,Asmax,As,a,c,et,phi,phiMn,notas};
+}
+function proponer(As,b,rec,est,opc=[3,4,5,6,8]){
+  let best=null;
+  for(const num of opc){const[db,a1]=VAR[num];const n=Math.max(2,Math.ceil(As/a1-1e-9));if(n>10)continue;
+    const libre=n>1?(b-2*rec-2*VAR[est][0]-n*db)/(n-1):b;if(libre<Math.max(2.5,db,2.67))continue;
+    const ex=n*a1-As;if(!best||ex<best.ex)best={n,num,ex,As:n*a1}}
+  return best;
+}
+function propAs(n,num){return n*VAR[num][1]}
+function cortante(Vu,b,d,fc,fyt,num,ramas){
+  const Vc=0.53*sqrt(fc)*b*d,Av=ramas*VAR[num][1],notas=[];
+  const Vs=Math.max(0,Vu/0.75-Vc),Vslim=2.1*sqrt(fc)*b*d;
+  if(Vs>Vslim)notas.push("Vs excede 2.1√f'c·b·d: aumenta la sección (ACI 22.5.1.2).");
+  const sreq=Vs>0?Av*fyt*d/Vs:Infinity,smax=Vs<=1.06*sqrt(fc)*b*d?Math.min(d/2,60):Math.min(d/4,30);
+  const savmin=Av*fyt/(Math.max(0.2*sqrt(fc),3.5)*b);
+  let s=Vu>0.5*0.75*Vc?Math.min(sreq,smax,savmin):Math.min(smax,savmin);s=Math.floor(s*2)/2;
+  const phiVn=0.75*(Vc+Av*fyt*d/s);
+  return{Vc,phiVc:0.75*Vc,Vs,sreq,smax,savmin,s,phiVn,ok:phiVn>=Vu&&Vs<=Vslim,notas};
+}
+function capasRect(b,h,num,nb,nh,rec,est){
+  const db=VAR[num][0],a1=VAR[num][1],y1=rec+VAR[est][0]+db/2,y2=h-y1,c=[{As:nb*a1,y:y1},{As:nb*a1,y:y2}];
+  for(let i=1;i<=nh-2;i++)c.push({As:2*a1,y:y1+(y2-y1)*i/(nh-1)});
+  return c.sort((p,q)=>p.y-q.y);
+}
+function puntoPM(c,b,h,capas,fc,fy){
+  const a=Math.min(beta1(fc)*c,h),Cc=0.85*fc*a*b;let P=Cc,M=Cc*(h/2-a/2);
+  for(const cp of capas){const e=0.003*(c-cp.y)/c;let fs=Math.max(-fy,Math.min(fy,e*ES));if(cp.y<a)fs-=0.85*fc;const F=cp.As*fs;P+=F;M+=F*(h/2-cp.y)}
+  const dt=Math.max(...capas.map(x=>x.y));return{P,M,et:0.003*(dt-c)/c};
+}
+function diagramaPM(b,h,capas,fc,fy,n=160){
+  const Ast=capas.reduce((s,x)=>s+x.As,0),P0=0.85*fc*(b*h-Ast)+fy*Ast,Pmax=0.8*0.65*P0,pts=[];
+  for(let i=0;i<n;i++){const c=h*3*(1-i/n)+0.5,r=puntoPM(c,b,h,capas,fc,fy),phi=phiDef(r.et,fy/ES);pts.push({pP:Math.min(phi*r.P,Pmax),pM:phi*r.M,P:r.P,M:r.M})}
+  pts.push({pP:-0.9*fy*Ast,pM:0,P:-fy*Ast,M:0});
+  return{pts,Pmax,P0,Ast};
+}
+function revisarCol(Pu,Mu,b,h,capas,fc,fy){
+  const{pts,Pmax,Ast}=diagramaPM(b,h,capas,fc,fy,240),rho=Ast/(b*h),notas=[];
+  if(rho<0.01||rho>0.08)notas.push(`ρ = ${(rho*100).toFixed(2)} % fuera de 1 %–8 % (ACI 10.6.1.1).`);
+  if(Pu>Pmax)return{ok:false,rho,phiMn:0,DC:Pu/Pmax,Pmax,pts,notas:notas.concat(["Pu excede φPn,max."])};
+  let phiMn=0;for(let i=0;i<pts.length-1;i++){const p1=pts[i],p2=pts[i+1];if((p1.pP-Pu)*(p2.pP-Pu)<=0&&p1.pP!==p2.pP)phiMn=Math.max(phiMn,p1.pM+(p2.pM-p1.pM)*(Pu-p1.pP)/(p2.pP-p1.pP))}
+  const DC=phiMn>0?Mu/phiMn:Infinity;return{ok:DC<=1&&!notas.length,rho,phiMn,DC,Pmax,pts,notas};
+}
+const estCol=(b,h,nl,ne)=>Math.floor(Math.min(16*VAR[nl][0],48*VAR[ne][0],Math.min(b,h)));
+function zapata(Ps,Pu,c1,c2,qadm,Df,gam,fc,fy,rec,num,hmin){
+  const notas=[],qn=qadm-gam*Df;if(qn<=0)return{err:"La capacidad admisible no alcanza para la profundidad de desplante."};
+  const A=Ps/qn,B=Math.ceil(sqrt(A)*100/5)*5,L=B,db=VAR[num][0];let h=hmin,d,qu,quk,Vp,phVp,V1,phV1,b0;
+  for(let k=0;k<40;k++){d=h-rec-db;qu=Pu/(B*L/1e4);quk=qu*1000/1e4;b0=2*(c1+d)+2*(c2+d);Vp=quk*(B*L-(c1+d)*(c2+d));
+    const be=Math.max(c1,c2)/Math.min(c1,c2),vc=Math.min(1.06,0.53*(1+2/be),0.27*(40*d/b0+2))*sqrt(fc);phVp=0.75*vc*b0*d;
+    V1=quk*Math.max((B-c1)/2-d,0)*L;phV1=0.75*0.53*sqrt(fc)*L*d;if(Vp<=phVp&&V1<=phV1&&d>=15)break;h+=5}
+  const v=(B-c1)/2,Mu=quk*L*v*v/2,fl=flexion(Mu,L,d,fc,fy),Ast=0.0018*L*h,As=Math.max(isNaN(fl.As)?0:fl.As,Ast);
+  if(As===Ast)notas.push("Rige acero por contracción y temperatura 0.0018·b·h (ACI 8.6.1.1).");
+  let n=Math.ceil(As/VAR[num][1]),s=n>1?Math.floor((L-2*rec)/(n-1)):L;s=Math.min(s,3*h,45);n=Math.ceil((L-2*rec)/s)+1;
+  return{B,L,h,d,qs:Ps/(B*L/1e4),qu,Vp,phVp,V1,phV1,Mu,As:n*VAR[num][1],n,s,ok:Vp<=phVp&&V1<=phV1,notas};
+}
+const FAE=(L,H)=>H/L<=1.33?1:Math.pow(1.33*L/H,2);
+const VmR=(L,t,P,vm)=>Math.min(0.7*(0.5*vm*L*t+0.3*P),1.5*0.7*vm*L*t);
+function espCFE(a0,c,Ta,Tb,k,r){const Tc=Tb<2?2:Tb;return T=>{if(T<Ta)return a0+(c-a0)*T/Ta;if(T<Tb)return c;const p=k+(1-k)*Math.pow(Tb/T,2);return T<Tc?c*p*Math.pow(Tb/T,r):c*p*Math.pow(Tb/Tc,r)*Math.pow(Tc/T,2)}}
+function espPuntos(pts){return T=>{if(T<=pts[0][0])return pts[0][1];for(let i=1;i<pts.length;i++)if(T<=pts[i][0]){const[t0,a0]=pts[i-1],[t1,a1]=pts[i];return a0+(a1-a0)*(T-t0)/(t1-t0)}return pts[pts.length-1][1]}}
+function Qp(T,Q,Ta,Tb,k,alfa){let q;if(T<=Ta)q=1+(Q-1)*sqrt(1/k)*T/Ta;else if(T<=Tb)q=1+(Q-1)*sqrt(1/k);else{const p=k+(1-k)*Math.pow(Tb/T,2);q=1+(Q-1)*sqrt(p/k)}return Math.max(1,q*alfa)}
+const Rf=(T,R0,Ta)=>T>=Ta?R0:1+(R0-1)*sqrt(T/Ta);
+const Tempirico=(H,sis)=>{const[Ct,x]={marco:[0.0466,0.9],muros:[0.0488,0.75],acero:[0.0724,0.8]}[sis];return Ct*Math.pow(H,x)};
+function estatico(niv,ae,par){
+  const W=niv.reduce((s,n)=>s+n.W,0),Wh=niv.reduce((s,n)=>s+n.W*n.z,0),conK=niv.every(n=>n.K>0);
+  let T=par.T>0?par.T:Tempirico(Math.max(...niv.map(n=>n.z)),par.sis),c,V,F,Vi;
+  for(let it=0;it<20;it++){c=ae(T)/(Qp(T,par.Q,par.Ta,par.Tb,par.k,par.alfa)*Rf(T,par.R0,par.Ta)*par.rho);V=c*W;F=niv.map(n=>n.W*n.z/Wh*V);
+    Vi=[];let acc=0;for(let i=F.length-1;i>=0;i--){acc+=F[i];Vi[i]=acc}
+    if(!conK||par.T>0)break;let x=0;const dsp=niv.map((n,i)=>(x+=Vi[i]/n.K));const num=niv.reduce((s,n,i)=>s+n.W*dsp[i]**2,0),den=F.reduce((s,f,i)=>s+f*dsp[i],0);
+    const Tn=2*Math.PI*sqrt(num/(9.81*den));if(Math.abs(Tn-T)<1e-4){T=Tn;break}T=Tn}
+  const amp=Qp(T,par.Q,par.Ta,par.Tb,par.k,par.alfa)*Rf(T,par.R0,par.Ta);
+  const dist=conK?niv.map((n,i)=>{const d=Vi[i]/n.K*amp;return{d,g:d/n.he}}):null;
+  return{T,c,V,W,F,Vi,dist,amp};
+}
+/* costos */
+let MO=null,PRE={};
+function fsr(sd){const f=MO.fsr,I=f.imss,uma=MO.meta.uma,sm=MO.meta.sm_zlfn,Tp=365+f.aguinaldo_dias+f.vacaciones_dias*f.prima_vacacional,
+  Tl=365-f.domingos-f.vacaciones_dias-f.festivos-f.dias_costumbre-f.dias_clima,sbc=Math.min(sd*Tp/365,25*uma);
+  let ce=I.ceav_2026[I.ceav_2026.length-1][1];if(sd<=sm*1.0001)ce=I.ceav_2026[0][1];else for(const[l,p]of I.ceav_2026.slice(1))if(sbc/uma<=l){ce=p;break}
+  const pct=I.riesgo_trabajo+I.prestaciones_dinero+I.gastos_medicos_pens+I.invalidez_vida+I.guarderias+I.retiro+ce+f.infonavit;
+  const dia=sbc*pct/100+uma*I.em_cuota_fija/100+Math.max(0,sbc-3*uma)*I.em_excedente/100,rem=sd*Tp,ps=(dia*365+rem*f.isn/100)/rem;return Tp/Tl*(1+ps)}
+const sdRef=id=>{const c=MO.categorias.find(x=>x.id===id);return Math.round((c.sd_ref_min+c.sd_ref_max)/2)};
+const cuadCost=id=>MO.cuadrillas.find(q=>q.id===id).integrantes.reduce((s,i)=>s+i.cant*sdRef(i.cat)*fsr(sdRef(i.cat)),0);
+function apu(rid,reg,rendOv){const r=MO.rendimientos.find(x=>x.id===rid),rend=rendOv||(r.rend_min+r.rend_max)/2;let mat=0,eq=0;
+  for(const m of r.materiales){const p=PRE[m.id];if(p)mat+=m.cant*(p.min+p.max)/2*(p.base==="mx"?1+reg/100:1)}
+  const mo=cuadCost(r.cuadrilla)/rend;for(const e of r.equipo){const x=MO.equipo.find(q=>q.id===e.id);eq+=e.cant*(x.min+x.max)/2}
+  return{r,rend,mat,mo,her:mo*0.03,eq,cd:mat+mo*1.03+eq}}
+/* programa */
+function cpm(acts){const by=Object.fromEntries(acts.map(a=>[a.id,a])),ord=[],vis=new Set(),tmp=new Set();
+  const visit=k=>{if(vis.has(k))return;if(tmp.has(k))throw new Error("Hay un ciclo en las predecesoras de "+k);tmp.add(k);for(const p of by[k].pred){if(!by[p])throw new Error(`${k}: la predecesora "${p}" no existe`);visit(p)}tmp.delete(k);vis.add(k);ord.push(k)};
+  acts.forEach(a=>visit(a.id));for(const k of ord){const a=by[k];a.IC=Math.max(0,...a.pred.map(p=>by[p].TC));a.TC=a.IC+a.dur}
+  const fin=Math.max(...acts.map(a=>a.TC)),suc=Object.fromEntries(acts.map(a=>[a.id,[]]));acts.forEach(a=>a.pred.forEach(p=>suc[p].push(a.id)));
+  for(const k of ord.slice().reverse()){const a=by[k];a.TL=suc[k].length?Math.min(...suc[k].map(s=>by[s].IL)):fin;a.IL=a.TL-a.dur;a.hol=a.IL-a.IC;a.crit=Math.abs(a.hol)<1e-6}
+  return fin}
+function costoSemana(acts,fin,ds){const n=Math.ceil(fin/ds),s=new Array(n).fill(0);
+  for(const a of acts){if(!a.dur){s[Math.min(Math.floor(a.IC/ds),n-1)]+=a.costo;continue}const r=a.costo/a.dur;let t=a.IC;
+    while(t<a.TC-1e-9){const w=Math.floor(t/ds),tr=Math.min((w+1)*ds,a.TC)-t;s[Math.min(w,n-1)]+=r*tr;t+=tr}}return s}
+function flujo(sem,monto,pg){const n=sem.length,tot=sem.reduce((x,y)=>x+y,0)||1,H=n+Math.max(pg.dp,pg.cred)+pg.per+2,ing=new Array(H).fill(0),egr=new Array(H).fill(0);
+  ing[0]+=monto*pg.ant;const av=sem.map(c=>c/tot);
+  for(let w=0;w<n;w++){egr[Math.min(w+pg.cred,H-1)]+=sem[w]*pg.fmat;egr[w]+=sem[w]*pg.fmo;egr[Math.min(w+1,H-1)]+=sem[w]*(1-pg.fmat-pg.fmo);
+    if((w+1)%pg.per===0||w===n-1){const ini=(w+1)%pg.per===0?w+1-pg.per:Math.floor(w/pg.per)*pg.per;const est=monto*av.slice(Math.max(ini,0),w+1).reduce((x,y)=>x+y,0);ing[Math.min(w+1+pg.dp,H-1)]+=est*(1-pg.ant-pg.ret)}}
+  ing[Math.min(n+pg.dp+2,H-1)]+=monto*pg.ret;let acc=0,min=0;const f=[];
+  for(let w=0;w<H;w++){acc+=ing[w]-egr[w];min=Math.min(min,acc);f.push({w:w+1,ing:ing[w],egr:egr[w],acc,prog:w<n?sem[w]:0})}
+  const i=Math.pow(1+pg.tasa,1/52)-1,cf=f.reduce((s,x)=>s+Math.max(0,-x.acc)*i,0);return{f,fin:-min,cf,util:acc}}
+
+/* ================= interfaz ================= */
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const nf=(n,d=2)=>n==null||!isFinite(n)?"—":Number(Math.abs(n)<Math.pow(10,-d)/2?0:n).toLocaleString("es-MX",{minimumFractionDigits:d,maximumFractionDigits:d});
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const st={get(k){try{return JSON.parse(localStorage.getItem("vc_"+k))}catch(e){return null}},set(k,v){try{localStorage.setItem("vc_"+k,JSON.stringify(v))}catch(e){}}};
+const VSEL=[3,4,5,6,8,10];
+const FORMS={
+ trabe:[["Mu","Momento último Mu","t·m",12],["Vu","Cortante último Vu","t",9],["b","Ancho b","cm",25],["h","Peralte total h","cm",50],["rec","Recubrimiento libre","cm",4],["fc","f'c","kg/cm²",250],["fy","fy","kg/cm²",4200],["est","Estribo #","",3,[2.5,3,4]],["ramas","Ramas del estribo","",2]],
+ columna:[["Pu","Carga axial Pu","t",40],["Mu","Momento Mu","t·m",3],["b","Ancho b","cm",30],["h","Peralte h (dirección de M)","cm",30],["num","Varilla #","",6,VSEL],["nb","Barras por cara (en b)","",2],["nh","Barras por cara lateral (en h)","",2],["rec","Recubrimiento libre","cm",4],["est","Estribo #","",3,[2.5,3,4]],["fc","f'c","kg/cm²",250],["fy","fy","kg/cm²",4200]],
+ zapata:[["Ps","Carga de servicio P","t",40],["Pu","Carga última Pu","t",56],["c1","Columna c1","cm",30],["c2","Columna c2","cm",30],["qadm","Capacidad admisible","t/m²",15],["Df","Profundidad de desplante","m",1.2],["gam","Peso vol. del relleno","t/m³",1.8],["num","Varilla #","",4,[3,4,5,6]],["hmin","Peralte mínimo","cm",25],["rec","Recubrimiento","cm",7.5],["fc","f'c","kg/cm²",250],["fy","fy","kg/cm²",4200]],
+ muros:[["W","Peso total W","t",95],["cs","Coeficiente sísmico c/Q'R","",0.21],["vm","v*m","kg/cm²",3.5],["FC","Factor de carga","",1.1]],
+ sismo:[["a0","a0 (PRODISIS)","g",0.22],["c","c meseta","g",0.60],["Ta","Ta","s",0.10],["Tb","Tb","s",0.60],["k","k","",1.5],["r","r","",0.5],["Q","Q","",2],["R0","R0 sobrerresistencia","",2],["rho","ρ redundancia","",1],["alfa","α irregularidad","",1],["T","Periodo T (0 = estimar)","s",0],["sis","Sistema (para T empírico)","",'muros',['marco','muros','acero']],["lim","Distorsión límite","",0.0025]],
+ presupuesto:[["proy","Proyecto","","Casa habitación"],["area","Área construida","m²",160],["reg","Ajuste materiales Tijuana","%",10],["ind","Indirectos","%",12],["fin","Financiamiento","%",1],["uti","Utilidad","%",10],["iva","IVA","%",8,[8,16]]],
+ programa:[["monto","Monto del contrato sin IVA","$",970000],["ant","Anticipo","%",30],["per","Estimación cada","sem",2],["dp","El cliente paga en","sem",1],["ret","Fondo de garantía","%",5],["cred","Crédito de proveedores","sem",2],["fmat","Parte de material","%",55],["fmo","Parte de nómina","%",35],["tasa","Tasa anual del financiamiento","%",14],["ds","Días laborables por semana","",6]],
+};
+const TABLAS={
+ muros:{cols:[["eje","Eje","t"],["dir","Dir.","s",["X","Y"]],["L","L cm","n"],["t","t cm","n"],["H","H cm","n"],["P","P kg","n"]],def:[["A","X",800,15,260,9000],["C","X",800,15,260,9000],["B","X",400,15,260,6000],["1","Y",1000,15,260,11000],["3","Y",1000,15,260,11000],["2","Y",500,15,260,6000]]},
+ sismo:{cols:[["n","Nivel","t"],["W","W t","n"],["z","Altura z m","n"],["he","Entrepiso m","n"],["K","Rigidez t/m (opc.)","n"]],def:[["Planta baja",52,2.8,2.8,0],["Azotea",43,5.6,2.8,0]]},
+ presupuesto:{cols:[["rid","Concepto","c"],["q","Cantidad","n"]],def:[["exc-mano",44],["plantilla",22],["cimbra-cim",43],["acero-medio",900],["acero-ligero",2200],["colado-bomba",25],["cimbra-losa",160],["block-15",240],["castillo",125],["dala",108],["firme",80],["aplanado",360],["piso-cer",150],["pintura",640],["imper",85],["salida-elec",70],["salida-hid",18]]},
+ programa:{cols:[["id","ID","t"],["nom","Actividad","t"],["dur","Días","n"],["pred","Predecesoras","t"],["costo","Costo $","n"]],def:[["A01","Excavación y plantillas",6,"",40000],["A02","Cimentación (acero, cimbra, colado)",8,"A01",120000],["A03","Muros de block y castillos",14,"A02",160000],["A04","Losa de entrepiso",8,"A03",110000],["A05","Muros planta alta",10,"A04",120000],["A06","Losa de azotea",8,"A05",100000],["A07","Instalaciones",12,"A04",70000],["A08","Aplanados y firmes",12,"A06,A07",80000],["A09","Impermeabilización",3,"A06",30000],["A10","Pisos y pintura",12,"A08",50000]]},
+};
+const val=(p,k)=>{const e=document.getElementById(`${p}-${k}`);if(!e)return null;const f=FORMS[p].find(x=>x[0]===k);return typeof f[3]==="string"?e.value:parseFloat(e.value)};
+function buildForm(p){
+  const saved=st.get("f_"+p)||{},box=$(`[data-form="${p}"]`);
+  box.innerHTML=FORMS[p].map(([k,l,u,d,opts])=>{const v=saved[k]??d;
+    const inp=opts?`<select id="${p}-${k}">${opts.map(o=>`<option ${String(o)===String(v)?"selected":""}>${o}</option>`).join("")}</select>`:`<input id="${p}-${k}" ${typeof d==="string"?'type="text"':'type="number" step="any" inputmode="decimal"'} value="${esc(v)}">`;
+    return `<label class="field">${esc(l)}${u?` <span class="u">(${esc(u)})</span>`:""}${inp}</label>`}).join("");
+  box.addEventListener("input",()=>{const o={};FORMS[p].forEach(([k])=>o[k]=document.getElementById(`${p}-${k}`).value);st.set("f_"+p,o);RUN[p]()});
+}
+let TD={};
+function buildTable(p){
+  const T=TABLAS[p];TD[p]=st.get("t_"+p)||T.def.map(r=>r.slice());drawTable(p);
+}
+function drawTable(p,extra){
+  const T=TABLAS[p],el=$(`#${{muros:"m",sismo:"s",presupuesto:"pr",programa:"pg"}[p]}-tab`);
+  const head=`<tr>${T.cols.map(c=>`<th>${c[1]}</th>`).join("")}${extra?extra.head:""}<th></th></tr>`;
+  el.innerHTML=head+TD[p].map((r,i)=>`<tr>${T.cols.map((c,j)=>{const v=r[j];
+    if(c[2]==="s")return `<td><select data-r="${i}" data-c="${j}">${c[3].map(o=>`<option ${o===v?"selected":""}>${o}</option>`).join("")}</select></td>`;
+    if(c[2]==="c")return `<td><select class="con" data-r="${i}" data-c="${j}">${conceptOpts(v)}</select></td>`;
+    return `<td><input data-r="${i}" data-c="${j}" ${c[2]==="n"?'type="number" step="any" inputmode="decimal"':""} value="${esc(v)}"></td>`}).join("")}${extra?extra.row(i):""}<td><button class="btn x ghost" data-del="${i}" aria-label="Quitar renglón">✕</button></td></tr>`).join("");
+  el.oninput=e=>{const t=e.target;if(t.dataset.r==null)return;const c=TABLAS[p].cols[+t.dataset.c];TD[p][+t.dataset.r][+t.dataset.c]=c[2]==="n"?parseFloat(t.value)||0:t.value;st.set("t_"+p,TD[p]);RUN[p](true)};
+  el.onchange=el.oninput;
+  el.onclick=e=>{const b=e.target.closest("[data-del]");if(!b)return;TD[p].splice(+b.dataset.del,1);st.set("t_"+p,TD[p]);drawTable(p,extra);RUN[p]()};
+}
+function conceptOpts(v){if(!MO)return `<option>${esc(v)}</option>`;const g={};MO.rendimientos.forEach(r=>(g[r.partida]=g[r.partida]||[]).push(r));
+  return Object.entries(g).map(([k,a])=>`<optgroup label="${esc(k)}">${a.map(r=>`<option value="${r.id}" ${r.id===v?"selected":""}>${esc(r.concepto)} (${esc(r.unidad)})</option>`).join("")}</optgroup>`).join("")}
+const led=rows=>rows.map(r=>r?`<tr class="${r[3]||""}"><td>${r[0]}${r[2]?`<span class="ref">${r[2]}</span>`:""}</td><td class="n">${r[1]}</td></tr>`:"").join("");
+const kpis=a=>a.map(([v,l])=>`<div class="kpi"><b>${v}</b>${l}</div>`).join("");
+const verdict=(el,ok,txt,warn)=>{el.className="verdict "+(ok?(warn?"warn":"ok"):"bad");el.textContent=txt};
+const notes=(el,arr)=>{el.innerHTML=arr.map(n=>`<li>${esc(n)}</li>`).join("")};
+
+/* ---- SVG helpers ---- */
+const css=v=>`var(--${v})`;
+function axes(W,H,m,xr,yr,xl,yl,nx=5,ny=5){
+  const X=x=>m.l+(x-xr[0])/(xr[1]-xr[0])*(W-m.l-m.r),Y=y=>H-m.b-(y-yr[0])/(yr[1]-yr[0])*(H-m.t-m.b);let s="";
+  for(let i=0;i<=ny;i++){const y=yr[0]+(yr[1]-yr[0])*i/ny;s+=`<line x1="${m.l}" x2="${W-m.r}" y1="${Y(y)}" y2="${Y(y)}" stroke="${css("grid")}"/><text x="${m.l-6}" y="${Y(y)+4}" text-anchor="end">${nf(y,Math.abs(yr[1]-yr[0])<5?2:0)}</text>`}
+  for(let i=0;i<=nx;i++){const x=xr[0]+(xr[1]-xr[0])*i/nx;s+=`<text x="${X(x)}" y="${H-m.b+16}" text-anchor="middle">${nf(x,Math.abs(xr[1]-xr[0])<5?2:0)}</text>`}
+  s+=`<line x1="${m.l}" x2="${W-m.r}" y1="${Y(Math.max(yr[0],0))}" y2="${Y(Math.max(yr[0],0))}" stroke="${css("axis")}"/><text x="${(m.l+W-m.r)/2}" y="${H-4}" text-anchor="middle">${xl}</text><text x="12" y="${m.t-6}">${yl}</text>`;
+  return{s,X,Y};
+}
+const path=(pts,X,Y)=>pts.map((p,i)=>`${i?"L":"M"}${X(p[0]).toFixed(1)},${Y(p[1]).toFixed(1)}`).join("");
+function niceRange(lo,hi,n=5){const st=niceMax((hi-lo)/n)||1,a=Math.floor(lo/st)*st,b=Math.ceil(hi/st)*st;return{r:[a,b],n:Math.max(1,Math.round((b-a)/st))}}
+function niceMax(v){if(v<=0)return 1;const e=Math.pow(10,Math.floor(Math.log10(v))),f=v/e;return(f<=1?1:f<=2?2:f<=2.5?2.5:f<=5?5:10)*e}
+
+/* ---- paneles ---- */
+const RUN={};
+RUN.trabe=()=>{const g=k=>val("trabe",k),b=g("b"),h=g("h"),fc=g("fc"),fy=g("fy"),est=g("est"),db0=1.588,d=h-g("rec")-VAR[est][0]-db0/2;
+  const fl=flexion(g("Mu")*1e5,b,d,fc,fy),co=cortante(g("Vu")*1000,b,d,fc,fy,est,g("ramas"));
+  const pr=isNaN(fl.As)?null:proponer(fl.As,b,g("rec"),est),ok=fl.ok&&co.ok&&!!pr;
+  verdict($("#t-ver"),ok,ok?`Cumple — ${pr.n} vars #${pr.num} (${VAR[pr.num][3]}) abajo, 2 #${Math.min(pr.num,4)} arriba, E#${est} @ ${co.s} cm`:(!pr&&!isNaN(fl.As)?"No caben las varillas en el ancho: aumenta b o usa dos lechos":"No cumple: revisa las notas"));
+  $("#t-kpi").innerHTML=kpis([[nf(fl.As),"As de diseño cm²"],[pr?nf(pr.As):"—","As colocada cm²"],[isFinite(fl.phiMn)?nf(fl.phiMn/1e5):"—","φMn t·m"],[nf(co.phiVn/1000),"φVn t"],[`${co.s} cm`,"Separación de estribos"]]);
+  $("#t-led").innerHTML=led([["Peralte efectivo d",nf(d,1)+" cm","h − rec − estribo − db/2 (#5 supuesta)"],["As requerida",nf(fl.Asr)+" cm²","ρ = 0.85f'c/fy·(1−√(1−2Rn/0.85f'c)), ACI 22.2"],["As mínima",nf(fl.Asmin)+" cm²","max(0.8√f'c, 14)·b·d/fy, ACI 9.6.1.2"],["As máxima (εt = 0.005)",nf(fl.Asmax)+" cm²","ACI 21.2.2"],["εt y φ",fl.et?`${nf(fl.et,4)} / ${nf(fl.phi,3)}`:"—","ACI 21.2.2"],["Vc",nf(co.Vc/1000)+" t","0.53λ√f'c·b·d, ACI 22.5.5.1"],["Vs requerido",nf(co.Vs/1000)+" t","Vu/φ − Vc, φ = 0.75"],["s requerida / s máx.",`${isFinite(co.sreq)?nf(co.sreq,1):"—"} / ${nf(co.smax,1)} cm`,"ACI 9.7.6.2.2"],["s por Av mínimo",nf(co.savmin,1)+" cm","Av ≥ max(0.2√f'c, 3.5)·b·s/fyt, ACI 9.6.3.4"]]);
+  notes($("#t-notes"),[...(fl.notas||[]),...co.notas]);
+  // dibujo
+  const sc=Math.min(200/h,180/b),ox=60,oy=30,W=b*sc,H=h*sc,r=g("rec")*sc,de=VAR[est][0]*sc;let s=`<rect x="${ox}" y="${oy}" width="${W}" height="${H}" fill="none" stroke="${css("conc")}" stroke-width="2"/><rect x="${ox+r}" y="${oy+r}" width="${W-2*r}" height="${H-2*r}" rx="4" fill="none" stroke="${css("tie")}" stroke-width="${Math.max(1.5,de)}"/>`;
+  const fila=(n,num,y)=>{const dd=VAR[num][0]*sc,xa=ox+r+de+dd/2,xb=ox+W-r-de-dd/2;for(let i=0;i<n;i++){const x=n===1?xa:xa+(xb-xa)*i/(n-1);s+=`<circle cx="${x}" cy="${y}" r="${Math.max(dd/2,3)}" fill="${css("steel")}"/>`}};
+  if(pr){fila(pr.n,pr.num,oy+H-r-de-VAR[pr.num][0]*sc/2);fila(2,Math.min(pr.num,4),oy+r+de+VAR[Math.min(pr.num,4)][0]*sc/2)}
+  s+=`<text x="${ox+W/2}" y="${oy+H+18}" text-anchor="middle">b = ${b} cm</text><text x="${ox-8}" y="${oy+H/2}" text-anchor="end">h = ${h}</text>`;
+  const tx=ox+W+40;[`Inferior: ${pr?`${pr.n} #${pr.num} (${VAR[pr.num][3]})`:"—"}`,`Superior: 2 #${pr?Math.min(pr.num,4):"—"} corridas`,`Estribos: E#${est} @ ${co.s} cm`,`Zona de confinamiento: 2h = ${2*h} cm`,`f'c = ${fc} kg/cm² · fy = ${fy}`,`Mu = ${g("Mu")} t·m · Vu = ${g("Vu")} t`].forEach((t,i)=>s+=`<text class="lbl" x="${tx}" y="${oy+16+i*20}">${esc(t)}</text>`);
+  $("#t-svg").innerHTML=s;
+};
+RUN.columna=()=>{const g=k=>val("columna",k),b=g("b"),h=g("h"),fc=g("fc"),fy=g("fy");
+  const capas=capasRect(b,h,g("num"),g("nb"),g("nh"),g("rec"),g("est")),r=revisarCol(g("Pu")*1000,g("Mu")*1e5,b,h,capas,fc,fy),nbar=2*g("nb")+2*Math.max(0,g("nh")-2);
+  verdict($("#c-ver"),r.ok,r.ok?`Cumple — D/C = ${nf(r.DC)} con ${nbar} vars #${g("num")} y E#${g("est")} @ ${estCol(b,h,g("num"),g("est"))} cm`:`No cumple — ${r.notas[0]||`D/C = ${nf(r.DC)} > 1`}`);
+  $("#c-kpi").innerHTML=kpis([[nf(r.DC),"Demanda / capacidad"],[nf(r.phiMn/1e5),"φMn a Pu, t·m"],[nf(r.Pmax/1000,1),"φPn,max t"],[nf(r.rho*100)+" %","Cuantía ρ"],[`${estCol(b,h,g("num"),g("est"))} cm`,"Estribos s máx. (25.7.2)"]]);
+  const pts=r.pts,mM=niceMax(Math.max(...pts.map(p=>p.M/1e5),g("Mu"))*1.05),Pmx=niceMax(Math.max(...pts.map(p=>p.P/1000))*1.02),Pmn=Math.min(...pts.map(p=>p.P/1000));
+  const yR=niceRange(Pmn,Math.max(...pts.map(p=>p.P/1000))*1.02,6),A=axes(520,340,{l:58,r:16,t:22,b:36},[0,mM],yR.r,"M (t·m)","P (t)",5,yR.n);
+  let s=A.s+`<path d="${path(pts.map(p=>[p.M/1e5,p.P/1000]),A.X,A.Y)}" fill="none" stroke="${css("axis")}" stroke-dasharray="4 3"/><path d="${path(pts.map(p=>[p.pM/1e5,p.pP/1000]),A.X,A.Y)}" fill="none" stroke="${css("s1")}" stroke-width="2.4"/>`;
+  s+=`<circle cx="${A.X(g("Mu"))}" cy="${A.Y(g("Pu"))}" r="5" fill="${css("bad")}"/><text class="lbl" x="${A.X(g("Mu"))+8}" y="${A.Y(g("Pu"))-6}">(${g("Mu")}, ${g("Pu")})</text>`;
+  $("#c-svg").innerHTML=s;notes($("#c-notes"),[...r.notas,"φ varía de 0.65 (compresión controlada) a 0.90 (tensión controlada) según εt; φPn,max = 0.80·0.65·P0 (ACI 22.4.2.1).","Revisa esbeltez (ACI 6.2.5) y, en marcos dúctiles, columna fuerte – viga débil y confinamiento (ACI 18.7)."]);
+};
+RUN.zapata=()=>{const g=k=>val("zapata",k),z=zapata(g("Ps"),g("Pu"),g("c1"),g("c2"),g("qadm"),g("Df"),g("gam"),g("fc"),g("fy"),g("rec"),g("num"),g("hmin"));
+  if(z.err){verdict($("#z-ver"),false,z.err);return}
+  verdict($("#z-ver"),z.ok,z.ok?`Cumple — ${z.B} × ${z.L} × ${z.h} cm, parrilla #${g("num")} @ ${z.s} cm ambos sentidos`:"No cumple el cortante: revisa datos");
+  $("#z-kpi").innerHTML=kpis([[`${z.B}×${z.L}`,"Planta cm"],[`${z.h} cm`,"Peralte total"],[nf(z.qs),"q servicio t/m²"],[`#${g("num")} @ ${z.s}`,"Parrilla"],[nf(z.Vp/z.phVp),"D/C punzonamiento"]]);
+  $("#z-led").innerHTML=led([["Capacidad neta",nf(g("qadm")-g("gam")*g("Df"))+" t/m²","q adm − γ·Df"],["Área requerida",nf(g("Ps")/(g("qadm")-g("gam")*g("Df")))+" m²","P servicio / q neta"],["Presión última qu",nf(z.qu)+" t/m²","Pu / A"],["Punzonamiento Vu / φVc",`${nf(z.Vp/1000)} / ${nf(z.phVp/1000)} t`,"b0 a d/2, vc = min(1.06, 0.53(1+2/β), 0.27(αs·d/b0+2))√f'c"],["Cortante 1 dirección Vu / φVc",`${nf(z.V1/1000)} / ${nf(z.phV1/1000)} t`,"a d de la cara, 0.53√f'c·b·d"],["Mu en la cara",nf(z.Mu/1e5)+" t·m",""],["As colocada por sentido",nf(z.As)+` cm² (${z.n} vars)`,"max(flexión, 0.0018·b·h)"]]);
+  notes($("#z-notes"),[...z.notas,"Con momento en la columna revisa q = P/A·(1 ± 6e/B) ≤ q adm.","Plantilla f'c = 100 kg/cm² de 5 cm; recubrimiento 7.5 cm."]);
+  const sc=170/Math.max(z.B,z.L),W=z.B*sc,ox=30,oy=30;let s=`<rect x="${ox}" y="${oy}" width="${W}" height="${W}" fill="none" stroke="${css("conc")}" stroke-width="2"/>`;
+  const ns=Math.min(z.n,14);for(let i=0;i<ns;i++){const t=oy+8+(W-16)*i/(ns-1);s+=`<line x1="${ox+8}" x2="${ox+W-8}" y1="${t}" y2="${t}" stroke="${css("steel")}" stroke-width="1"/><line y1="${oy+8}" y2="${oy+W-8}" x1="${ox+8+(W-16)*i/(ns-1)}" x2="${ox+8+(W-16)*i/(ns-1)}" stroke="${css("steel")}" stroke-width="1"/>`}
+  s+=`<rect x="${ox+(W-g("c1")*sc)/2}" y="${oy+(W-g("c2")*sc)/2}" width="${g("c1")*sc}" height="${g("c2")*sc}" fill="${css("surface")}" stroke="${css("conc")}" stroke-width="2"/><text x="${ox+W/2}" y="${oy+W+18}" text-anchor="middle">PLANTA ${z.B} × ${z.L}</text>`;
+  const cx=280,base=200,hh=z.h*sc*1.4,dfh=Math.min(g("Df")*100*sc*1.4,150);
+  s+=`<rect x="${cx}" y="${base-hh}" width="${W}" height="${hh}" fill="none" stroke="${css("conc")}" stroke-width="2"/><rect x="${cx+(W-g("c1")*sc)/2}" y="${base-dfh}" width="${g("c1")*sc}" height="${dfh-hh}" fill="none" stroke="${css("conc")}" stroke-width="2"/><line x1="${cx-20}" x2="${cx+W+20}" y1="${base-dfh}" y2="${base-dfh}" stroke="${css("axis")}" stroke-dasharray="5 3"/>`;
+  for(let i=0;i<9;i++)s+=`<circle cx="${cx+8+(W-16)*i/8}" cy="${base-8}" r="2.6" fill="${css("steel")}"/>`;
+  s+=`<text x="${cx+W/2}" y="${base+18}" text-anchor="middle">CORTE · h = ${z.h} · Df = ${g("Df")} m</text>`;$("#z-svg").innerHTML=s;
+};
+RUN.muros=()=>{const g=k=>val("muros",k),vm=g("vm"),Vu=g("FC")*g("cs")*g("W")*1000,res=[];let rows=[];
+  for(const dir of["X","Y"]){const ms=TD.muros.filter(r=>r[1]===dir);const VR=ms.reduce((s,r)=>s+FAE(r[2],r[4])*VmR(r[2],r[3],r[5],vm),0);res.push({dir,VR,ok:VR>=Vu});
+    rows.push([`<b>Dirección ${dir}</b>`,`${nf(VR/1000)} t`,`ΣFAE·VmR de ${ms.length} muros`]);ms.forEach(r=>rows.push([`Muro ${esc(r[0])}: L = ${r[2]} cm, FAE = ${nf(FAE(r[2],r[4]),3)}`,`${nf(VmR(r[2],r[3],r[5],vm)/1000)} t`,""]))}
+  $("#m-kpi").innerHTML=kpis([[nf(Vu/1000)+" t","Cortante último FC·c·W"],...res.map(r=>[nf(r.VR/1000)+" t",`Resistencia dir. ${r.dir}`])]);
+  $("#m-ver").innerHTML=res.map(r=>`<div class="verdict ${r.ok?"ok":"bad"}" style="margin-bottom:6px">Dirección ${r.dir}: ${r.ok?"cumple":"no cumple"} (D/C = ${nf(Vu/r.VR)})</div>`).join("");
+  $("#m-led").innerHTML=led(rows);
+  const mx=niceMax(Math.max(Vu,...res.map(r=>r.VR))/1000*1.1),X=v=>110+v/mx*380;let s=`<text x="110" y="16">t</text>`;
+  res.forEach((r,i)=>{const y=34+i*80;s+=`<text class="lbl" x="10" y="${y+22}">Dirección ${r.dir}</text><rect x="110" y="${y}" width="${X(r.VR/1000)-110}" height="22" fill="${css(r.ok?"s2":"bad")}"/><text x="${X(r.VR/1000)+6}" y="${y+16}">VR ${nf(r.VR/1000,1)}</text><rect x="110" y="${y+28}" width="${X(Vu/1000)-110}" height="22" fill="${css("axis")}"/><text x="${X(Vu/1000)+6}" y="${y+44}">Vu ${nf(Vu/1000,1)}</text>`});
+  $("#m-svg").innerHTML=s;
+};
+RUN.sismo=()=>{const g=k=>val("sismo",k),par={Q:g("Q"),R0:g("R0"),rho:g("rho"),alfa:g("alfa"),Ta:g("Ta"),Tb:g("Tb"),k:g("k"),T:g("T"),sis:g("sis")};
+  const txt=$("#s-pts").value.trim();let ae,orig="Paramétrico CFE-2015 (estudio previo)";
+  if(txt){const pts=txt.split(/\n/).map(l=>l.split(/[,;\t ]+/).map(Number)).filter(p=>p.length>=2&&isFinite(p[0])&&isFinite(p[1])).sort((a,b)=>a[0]-b[0]);if(pts.length>=2){ae=espPuntos(pts);orig=`PRODISIS (${pts.length} puntos)`}}
+  if(!ae)ae=espCFE(g("a0"),g("c"),g("Ta"),g("Tb"),g("k"),g("r"));
+  const niv=TD.sismo.map(r=>({n:r[0],W:+r[1],z:+r[2],he:+r[3],K:+r[4]})).filter(n=>n.W>0&&n.z>0);
+  if(!niv.length){$("#s-kpi").innerHTML="";return}
+  const R=estatico(niv,ae,par),lim=g("lim");
+  $("#s-kpi").innerHTML=kpis([[nf(R.T,3)+" s","Periodo T"],[nf(R.c,4),"c/(Q'R)"],[nf(R.V)+" t","Cortante basal"],[nf(R.W)+" t","Peso total"],[nf(R.amp,2),"Q'·R (amplifica despl.)"]]);
+  const rows=niv.map((n,i)=>[`${esc(n.n)} · z = ${n.z} m`,`F = ${nf(R.F[i])} t · V = ${nf(R.Vi[i])} t`,R.dist?`Δ = ${nf(R.dist[i].d*100)} cm · γ = ${nf(R.dist[i].g,4)} ${R.dist[i].g<=lim?"≤":">"} ${lim} ${R.dist[i].g<=lim?"✓":"✗"}`:""]);
+  $("#s-led").innerHTML=led(rows);
+  notes($("#s-notes"),[`Espectro: ${orig}.`,R.dist?"Distorsiones con desplazamientos elásticos × Q'R; compara contra la tabla de la norma adoptada.":"Agrega rigideces de entrepiso para calcular periodo de Rayleigh y distorsiones.","El método estático aplica a estructuras regulares de altura moderada; para edificios mayores usa análisis dinámico modal."]);
+  const Tm=Math.max(3,R.T*1.3),pts=[];for(let i=0;i<=120;i++){const T=Tm*i/120;pts.push([T,ae(T),ae(T)/(Qp(T,par.Q,par.Ta,par.Tb,par.k,par.alfa)*Rf(T,par.R0,par.Ta)*par.rho)])}
+  const am=niceMax(Math.max(...pts.map(p=>p[1]))*1.05),A=axes(520,260,{l:48,r:14,t:22,b:36},[0,Tm],[0,am],"T (s)","a (g)");
+  $("#s-svg").innerHTML=A.s+`<path d="${path(pts.map(p=>[p[0],p[1]]),A.X,A.Y)}" fill="none" stroke="${css("axis")}" stroke-width="2"/><path d="${path(pts.map(p=>[p[0],p[2]]),A.X,A.Y)}" fill="none" stroke="${css("s1")}" stroke-width="2.4"/><line x1="${A.X(R.T)}" x2="${A.X(R.T)}" y1="${A.Y(0)}" y2="${A.Y(am)}" stroke="${css("bad")}" stroke-dasharray="4 3"/><text x="${A.X(R.T)+5}" y="${A.Y(am)+12}" style="fill:var(--bad)">T = ${nf(R.T,3)} s</text>`;
+};
+let LAST_PR=null;
+RUN.presupuesto=(soft)=>{if(!MO){return}const g=k=>val("presupuesto",k),reg=g("reg"),k=(1+g("ind")/100)*(1+g("fin")/100)*(1+g("uti")/100);
+  const rows=TD.presupuesto.map(r=>{const a=MO.rendimientos.find(x=>x.id===r[0])?apu(r[0],reg):null;return{a,q:+r[1]||0}});
+  if(!soft)drawTable("presupuesto",{head:"<th>P.U.</th><th>Importe</th>",row:i=>`<td class="n" id="pr-pu-${i}"></td><td class="n" id="pr-im-${i}"></td>`});
+  let sub=0,cd=0;const part={};rows.forEach((x,i)=>{if(!x.a)return;const pu=x.a.cd*k,im=pu*x.q;sub+=im;cd+=x.a.cd*x.q;part[x.a.r.partida]=(part[x.a.r.partida]||0)+im;
+    const a=document.getElementById("pr-pu-"+i),b=document.getElementById("pr-im-"+i);if(a)a.textContent="$"+nf(pu);if(b)b.textContent="$"+nf(im)});
+  const iva=sub*g("iva")/100,area=g("area");LAST_PR={rows,sub,iva,k,part};
+  $("#pr-kpi").innerHTML=kpis([["$"+nf(sub,0),"Subtotal sin IVA"],["$"+nf(sub+iva,0),`Total con IVA ${g("iva")} %`],[area>0?"$"+nf(sub/area,0):"—","Costo por m²"],[nf(k,4),"Factor de sobrecosto"],["$"+nf(cd,0),"Costo directo"]]);
+  const ent=Object.entries(part).sort((a,b)=>b[1]-a[1]),mx=niceMax(Math.max(1,...ent.map(e=>e[1]))),bh=Math.min(30,180/Math.max(1,ent.length));
+  $("#pr-svg").setAttribute("viewBox",`0 0 520 ${30+ent.length*(bh+8)}`);
+  $("#pr-svg").innerHTML=ent.map(([p,v],i)=>{const y=14+i*(bh+8),w=v/mx*300;return `<text class="lbl" x="0" y="${y+bh*0.7}">${esc(p)}</text><rect x="110" y="${y}" width="${w}" height="${bh}" rx="2" fill="${css("s1")}"/><text x="${116+w}" y="${y+bh*0.7}">$${nf(v,0)} · ${nf(v/sub*100,1)} %</text>`}).join("");
+};
+let LAST_PG=null;
+RUN.programa=()=>{const g=k=>val("programa",k),ds=g("ds")||6;
+  const acts=TD.programa.map(r=>({id:String(r[0]).trim(),nom:r[1],dur:+r[2]||0,pred:String(r[3]||"").split(/[,; ]+/).map(s=>s.trim()).filter(Boolean),costo:+r[4]||0})).filter(a=>a.id);
+  let fin;try{fin=cpm(acts)}catch(e){$("#pg-kpi").innerHTML=`<div class="verdict bad">${esc(e.message)}</div>`;$("#pg-gantt").innerHTML="";$("#pg-flujo").innerHTML="";return}
+  const sem=costoSemana(acts,fin,ds),pg={ant:g("ant")/100,per:Math.max(1,g("per")|0),dp:Math.max(0,g("dp")|0),ret:g("ret")/100,cred:Math.max(0,g("cred")|0),fmat:g("fmat")/100,fmo:g("fmo")/100,tasa:g("tasa")/100};
+  const F=flujo(sem,g("monto"),pg),costo=sem.reduce((a,b)=>a+b,0);LAST_PG={acts,F,sem};
+  $("#pg-kpi").innerHTML=kpis([[nf(fin,1),"Días hábiles"],[sem.length,"Semanas de obra"],["$"+nf(F.fin,0),"Financiamiento máximo"],["$"+nf(F.cf,0),"Costo del financiamiento"],[nf(costo?F.cf/costo*100:0,2)+" %","% sobre el costo"],["$"+nf(F.util,0),"Margen bruto (contrato − costo)"]]);
+  // gantt
+  const sorted=acts.slice().sort((a,b)=>a.IC-b.IC||a.id.localeCompare(b.id)),H=40+sorted.length*24,X=t=>230+t/Math.max(fin,1)*750;
+  let s="";for(let w=0;w<=Math.ceil(fin/ds);w++){s+=`<line x1="${X(w*ds)}" x2="${X(w*ds)}" y1="20" y2="${H-6}" stroke="${css("grid")}"/>`;if(w<Math.ceil(fin/ds))s+=`<text x="${X(w*ds+ds/2)}" y="14" text-anchor="middle">S${w+1}</text>`}
+  sorted.forEach((a,i)=>{const y=26+i*24;s+=`<text class="lbl" x="0" y="${y+13}">${esc(a.id)} ${esc(String(a.nom).slice(0,30))}</text><rect x="${X(a.IC)}" y="${y}" width="${Math.max(2,X(a.TC)-X(a.IC))}" height="16" rx="2" fill="${css(a.crit?"bad":"s1")}"/>${a.hol>0?`<rect x="${X(a.TC)}" y="${y+6}" width="${X(a.TC+a.hol)-X(a.TC)}" height="4" fill="${css("line")}"/>`:""}`});
+  $("#pg-gantt").setAttribute("viewBox",`0 0 1000 ${H}`);$("#pg-gantt").innerHTML=s;
+  // flujo
+  const f=F.f,yR=niceRange(Math.min(0,...f.map(x=>Math.min(-x.egr,x.acc)))/1000,Math.max(...f.map(x=>Math.max(x.ing,x.acc)))/1000,5);
+  const A=axes(520,240,{l:58,r:12,t:22,b:36},[0.5,f.length+0.5],yR.r,"Semana","miles $",Math.min(f.length,8),yR.n),bw=Math.max(2,(A.X(1.5)-A.X(0.5))*0.38);
+  let fs=A.s;f.forEach(x=>{fs+=`<rect x="${A.X(x.w)-bw}" y="${A.Y(x.ing/1000)}" width="${bw}" height="${A.Y(0)-A.Y(x.ing/1000)}" fill="${css("ok")}"/><rect x="${A.X(x.w)}" y="${A.Y(0)}" width="${bw}" height="${A.Y(-x.egr/1000)-A.Y(0)}" fill="${css("bad")}"/>`});
+  fs+=`<path d="${path(f.map(x=>[x.w,x.acc/1000]),A.X,A.Y)}" fill="none" stroke="${css("fg")}" stroke-width="2"/>`;$("#pg-flujo").innerHTML=fs;
+};
+
+/* ---- descargas, impresión, pestañas ---- */
+function csv(rows){return rows.map(r=>r.map(x=>{x=String(x??"");return /[",\n]/.test(x)?`"${x.replace(/"/g,'""')}"`:x}).join(",")).join("\n")}
+function dl(n,t){const a=document.createElement("a");a.href=URL.createObjectURL(new Blob(["﻿"+t],{type:"text/csv"}));a.download=n;document.body.appendChild(a);a.click();a.remove()}
+$("#pr-csv").onclick=()=>{if(!LAST_PR)return;const k=LAST_PR.k;dl("presupuesto-vertice.csv",csv([["Partida","Concepto","Unidad","Cantidad","Materiales","Mano de obra","Herr. y equipo","Costo directo","P.U.","Importe"],...LAST_PR.rows.filter(x=>x.a).map(x=>[x.a.r.partida,x.a.r.concepto,x.a.r.unidad,x.q,x.a.mat.toFixed(2),x.a.mo.toFixed(2),(x.a.her+x.a.eq).toFixed(2),x.a.cd.toFixed(2),(x.a.cd*k).toFixed(2),(x.a.cd*k*x.q).toFixed(2)]),[],["","Subtotal","","","","","","","",LAST_PR.sub.toFixed(2)],["","IVA","","","","","","","",LAST_PR.iva.toFixed(2)],["","Total","","","","","","","",(LAST_PR.sub+LAST_PR.iva).toFixed(2)]]))};
+$("#pg-csv").onclick=()=>{if(!LAST_PG)return;dl("programa-flujo-vertice.csv",csv([["ID","Actividad","Duración","Predecesoras","IC","TC","IL","TL","Holgura","Crítica","Costo"],...LAST_PG.acts.map(a=>[a.id,a.nom,a.dur,a.pred.join(" "),a.IC,a.TC,a.IL,a.TL,a.hol,a.crit?"Sí":"",a.costo]),[],["Semana","Costo programado","Ingresos","Egresos","Acumulado"],...LAST_PG.F.f.map(x=>[x.w,x.prog.toFixed(2),x.ing.toFixed(2),x.egr.toFixed(2),x.acc.toFixed(2)])]))};
+$("#pg-fromprice").onclick=()=>{if(!LAST_PR)return;const e=$("#programa-monto");e.value=Math.round(LAST_PR.sub);e.dispatchEvent(new Event("input",{bubbles:true}))};
+document.addEventListener("click",e=>{if(e.target.closest("[data-print]")){$("#ph-date").textContent=new Date().toLocaleDateString("es-MX");print()}
+  const r=e.target.closest("[data-reset]");if(r){const p=r.dataset.reset;try{localStorage.removeItem("vc_f_"+p);localStorage.removeItem("vc_t_"+p)}catch(err){}buildForm(p);if(TABLAS[p]){buildTable(p)}if(p==="sismo")$("#s-pts").value="";if(p==="presupuesto")RUN.presupuesto();else RUN[p]()}});
+$("#m-add").onclick=()=>{TD.muros.push(["M"+(TD.muros.length+1),"X",300,15,260,5000]);st.set("t_muros",TD.muros);drawTable("muros");RUN.muros()};
+$("#s-add").onclick=()=>{TD.sismo.push(["Nivel "+(TD.sismo.length+1),40,2.8*(TD.sismo.length+1),2.8,0]);st.set("t_sismo",TD.sismo);drawTable("sismo");RUN.sismo()};
+$("#pr-add").onclick=()=>{TD.presupuesto.push([MO?MO.rendimientos[0].id:"",1]);st.set("t_presupuesto",TD.presupuesto);RUN.presupuesto()};
+$("#pg-add").onclick=()=>{const n=TD.programa.length+1;TD.programa.push(["A"+String(n).padStart(2,"0"),"Nueva actividad",5,TD.programa.length?TD.programa[TD.programa.length-1][0]:"",0]);st.set("t_programa",TD.programa);drawTable("programa");RUN.programa()};
+$("#s-pts").value=st.get("s_pts")||"";$("#s-pts").addEventListener("input",e=>{st.set("s_pts",e.target.value);RUN.sismo()});
+function setTab(t){$$("#tabs button").forEach(b=>b.setAttribute("aria-selected",b.dataset.p===t));$$(".panel").forEach(p=>p.hidden=p.id!=="p-"+t);st.set("tab",t)}
+$("#tabs").onclick=e=>{const b=e.target.closest("button");if(b)setTab(b.dataset.p)};
+
+/* ---- arranque ---- */
+Object.keys(FORMS).forEach(buildForm);
+["muros","sismo","presupuesto","programa"].forEach(buildTable);
+["trabe","columna","zapata","muros","sismo","programa"].forEach(p=>{try{RUN[p]()}catch(e){console.error(p,e)}});
+setTab(st.get("tab")||"trabe");
+(async()=>{
+  const srcs=[["/precios-obra-/","Precios de Obra MX (en línea)"],["https://raw.githubusercontent.com/ingmiguelestradaf-rgb/precios-obra-/main/","Precios de Obra MX (GitHub)"],["datos/","copia local del repositorio"]];
+  for(const[base,lab]of srcs){try{const[a,b]=await Promise.all([fetch(base+"precios.json",{cache:"no-store"}),fetch(base+"mano-obra.json",{cache:"no-store"})]);if(!a.ok||!b.ok)continue;
+    const p=await a.json();MO=await b.json();PRE=Object.fromEntries(p.precios.map(x=>[x._id,x]));
+    $("#pr-src").innerHTML=`Base: ${esc(lab)} · mano de obra al ${esc(MO.meta.fecha)} · ${p.precios.length} precios. Factor de salario real calculado con IMSS, Infonavit e ISN 2026; salarios de referencia de la app.`;
+    RUN.presupuesto();return}catch(e){}}
+  $("#pr-src").textContent="No se pudo cargar la base de precios. Abre la página con conexión a internet.";
+})();
+</script>
+</body>
+</html>

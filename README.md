@@ -2,6 +2,8 @@
 
 Motor de cálculo de **Vértice Ingeniería, Arquitectura y Proyectos** (Tijuana, B.C.). Hace en Python lo que pide el skill *despacho-ingenieria-arquitectura*: análisis y diseño estructural, memoria de cálculo, planos DXF/PDF, presupuesto con precios unitarios, programa de obra y flujo de caja.
 
+**Úsalo en el navegador:** https://ingmiguelestradaf-rgb.github.io/VERTICE-CALCULO/ — trabe, columna (diagrama P-M), zapata, muros de mampostería, sismo (método estático), presupuesto con precios unitarios y programa con ruta crítica y flujo de caja. Los cálculos son los mismos que los del motor en Python; lo que escribes se guarda en tu equipo.
+
 Autor: Ing. Miguel Estrada · Todo resultado es **para revisión y firma del DRO / Corresponsable en Seguridad Estructural**.
 
 ## Instalación
