@@ -111,6 +111,8 @@ footer{font-size:12px;color:var(--muted);padding-bottom:24px}
       <button role="tab" data-p="sismo" aria-selected="false">Sismo</button>
       <button role="tab" data-p="presupuesto" aria-selected="false">Presupuesto</button>
       <button role="tab" data-p="programa" aria-selected="false">Programa y flujo</button>
+      <button role="tab" data-p="arq" aria-selected="false">Arquitectura e instalaciones</button>
+      <button role="tab" data-p="entregables" aria-selected="false">Entregables</button>
     </nav>
   </div>
 </header>
@@ -269,6 +271,50 @@ footer{font-size:12px;color:var(--muted);padding-bottom:24px}
       <div class="legend"><span><i style="background:var(--bad)"></i>Ruta crítica</span><span><i style="background:var(--s1)"></i>Con holgura</span><span><i style="background:var(--line)"></i>Holgura</span></div>
     </div>
   </section>
+  <!-- ARQUITECTURA E INSTALACIONES -->
+  <section class="panel" id="p-arq" role="tabpanel" hidden>
+    <p class="intro">Captura los espacios de cada nivel como rectángulos (origen en la esquina inferior izquierda, eje Y hacia el fondo; el frente del predio es el lado Sur). Con eso se dibujan plantas arquitectónicas, fachada y corte, instalación eléctrica con cuadro de cargas e hidrosanitaria con unidades mueble. Los planos aparecen aquí y se incluyen en las descargas de Entregables.</p>
+    <div class="card">
+      <h2 class="h">Espacios</h2>
+      <div class="fields" data-form="arq"></div>
+      <div class="tbl-wrap"><table class="ed" id="a-tab"></table></div>
+      <div class="toolbar"><button class="btn" id="a-add">Agregar espacio</button><button class="btn ghost" data-reset="arq">Ejemplo casa 2 niveles</button></div>
+      <p class="small">Puerta y ventana: lado del espacio donde van (N, S, E, O). La puerta se coloca a 30 cm de la esquina; la ventana al centro del muro. Muros de 15 cm a eje de los límites de cada espacio.</p>
+      <ul class="notes" id="a-warn"></ul>
+    </div>
+    <div class="card">
+      <div class="toolbar"><h2 class="h" style="margin-right:auto">Vista de planos</h2><select id="a-sheet" aria-label="Plano"></select><button class="btn" id="a-dxf">Esta hoja en DXF</button><button class="btn" id="a-pdf">Esta hoja en PDF</button></div>
+      <div style="background:#fff;border:1px solid var(--line);border-radius:4px;overflow:auto"><svg id="a-svg" viewBox="0 0 900 600" style="width:100%;min-width:720px;height:auto;display:block" role="img" aria-label="Plano"></svg></div>
+    </div>
+    <div class="grid2">
+      <div class="card"><h2 class="h">Cuadro de cargas eléctricas</h2><div class="tbl-wrap"><table class="ed" id="a-cargas"></table></div><ul class="notes" id="a-cnotes"></ul></div>
+      <div class="card"><h2 class="h">Hidrosanitaria</h2><div class="tbl-wrap"><table class="ed" id="a-hidro"></table></div><ul class="notes" id="a-hnotes"></ul></div>
+    </div>
+  </section>
+
+  <!-- ENTREGABLES -->
+  <section class="panel" id="p-entregables" role="tabpanel" hidden>
+    <p class="intro">Genera los archivos del proyecto con lo que capturaste en las demás pestañas: memoria de cálculo en Word, planos E-01 (cimentación) y E-02 (trabes y columnas) en DXF para AutoCAD y en PDF, y el Excel de presupuesto y programa con fórmulas vivas. Todo se arma en tu navegador; nada se sube a ningún servidor.</p>
+    <div class="grid2">
+      <div class="card">
+        <h2 class="h">Datos del proyecto</h2>
+        <div class="fields" data-form="entregables"></div>
+        <label class="field">Supuestos a validar — uno por renglón: supuesto | valor usado | impacto si cambia<textarea id="e-sup"></textarea></label>
+      </div>
+      <div class="card">
+        <h2 class="h">Descargar</h2>
+        <div class="toolbar" style="display:grid;gap:8px">
+          <button class="btn primary" data-gen="docx">Memoria de cálculo (.docx)</button>
+          <button class="btn primary" data-gen="dxf">Planos E-01 y E-02 (.dxf)</button>
+          <button class="btn primary" data-gen="pdf">Planos E-01 y E-02 (.pdf)</button>
+          <button class="btn primary" data-gen="xlsx">Presupuesto, APU y programa (.xlsx)</button>
+          <button class="btn" data-gen="todo">Todo</button>
+        </div>
+        <div class="small" id="e-status">Los planos se arman a escala en una hoja de 900 × 600 mm con tu cuadro de referencia; cada detalle lleva su escala.</div>
+        <ul class="notes" id="e-check"></ul>
+      </div>
+    </div>
+  </section>
 </main>
 <footer class="wrap">
   <p class="disclaimer">Para revisión y firma del DRO / Corresponsable en Seguridad Estructural.</p>
@@ -373,10 +419,11 @@ function fsr(sd){const f=MO.fsr,I=f.imss,uma=MO.meta.uma,sm=MO.meta.sm_zlfn,Tp=3
   const dia=sbc*pct/100+uma*I.em_cuota_fija/100+Math.max(0,sbc-3*uma)*I.em_excedente/100,rem=sd*Tp,ps=(dia*365+rem*f.isn/100)/rem;return Tp/Tl*(1+ps)}
 const sdRef=id=>{const c=MO.categorias.find(x=>x.id===id);return Math.round((c.sd_ref_min+c.sd_ref_max)/2)};
 const cuadCost=id=>MO.cuadrillas.find(q=>q.id===id).integrantes.reduce((s,i)=>s+i.cant*sdRef(i.cat)*fsr(sdRef(i.cat)),0);
-function apu(rid,reg,rendOv){const r=MO.rendimientos.find(x=>x.id===rid),rend=rendOv||(r.rend_min+r.rend_max)/2;let mat=0,eq=0;
-  for(const m of r.materiales){const p=PRE[m.id];if(p)mat+=m.cant*(p.min+p.max)/2*(p.base==="mx"?1+reg/100:1)}
-  const mo=cuadCost(r.cuadrilla)/rend;for(const e of r.equipo){const x=MO.equipo.find(q=>q.id===e.id);eq+=e.cant*(x.min+x.max)/2}
-  return{r,rend,mat,mo,her:mo*0.03,eq,cd:mat+mo*1.03+eq}}
+function apu(rid,reg,rendOv){const r=MO.rendimientos.find(x=>x.id===rid),rend=rendOv||(r.rend_min+r.rend_max)/2;let mat=0,eq=0;const lines=[];
+  for(const m of r.materiales){const p=PRE[m.id];if(!p)continue;const v=(p.min+p.max)/2*(p.base==="mx"?1+reg/100:1);mat+=m.cant*v;lines.push({t:"Material",d:`${p.mat} ${p.spec}`,u:p.unit,c:m.cant,p:v,f:`${p.src_t||p.src_u||""} (${p.date||""})${p.base==="mx"?` + ${reg} % Tijuana`:""}`})}
+  const q=MO.cuadrillas.find(x=>x.id===r.cuadrilla),cc=cuadCost(r.cuadrilla),mo=cc/rend;lines.push({t:"Mano de obra",d:`${q.nombre} (rend. ${rend} ${r.unidad}/jor)`,u:"jor",c:1/rend,p:cc,f:"FSR 2026 Tijuana"});
+  for(const e of r.equipo){const x=MO.equipo.find(q=>q.id===e.id),v=(x.min+x.max)/2;eq+=e.cant*v;lines.push({t:"Equipo",d:x.nombre,u:x.unidad,c:e.cant,p:v,f:x.nota})}
+  return{r,rend,mat,mo,her:mo*0.03,eq,cd:mat+mo*1.03+eq,lines}}
 /* programa */
 function cpm(acts){const by=Object.fromEntries(acts.map(a=>[a.id,a])),ord=[],vis=new Set(),tmp=new Set();
   const visit=k=>{if(vis.has(k))return;if(tmp.has(k))throw new Error("Hay un ciclo en las predecesoras de "+k);tmp.add(k);for(const p of by[k].pred){if(!by[p])throw new Error(`${k}: la predecesora "${p}" no existe`);visit(p)}tmp.delete(k);vis.add(k);ord.push(k)};
@@ -402,18 +449,23 @@ const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&g
 const st={get(k){try{return JSON.parse(localStorage.getItem("vc_"+k))}catch(e){return null}},set(k,v){try{localStorage.setItem("vc_"+k,JSON.stringify(v))}catch(e){}}};
 const VSEL=[3,4,5,6,8,10];
 const FORMS={
- trabe:[["Mu","Momento último Mu","t·m",12],["Vu","Cortante último Vu","t",9],["b","Ancho b","cm",25],["h","Peralte total h","cm",50],["rec","Recubrimiento libre","cm",4],["fc","f'c","kg/cm²",250],["fy","fy","kg/cm²",4200],["est","Estribo #","",3,[2.5,3,4]],["ramas","Ramas del estribo","",2]],
+ trabe:[["Mu","Momento último Mu","t·m",12],["Vu","Cortante último Vu","t",9],["b","Ancho b","cm",25],["h","Peralte total h","cm",50],["rec","Recubrimiento libre","cm",4],["fc","f'c","kg/cm²",250],["fy","fy","kg/cm²",4200],["est","Estribo #","",3,[2.5,3,4]],["ramas","Ramas del estribo","",2],["L","Claro libre L (para el plano)","cm",500]],
  columna:[["Pu","Carga axial Pu","t",40],["Mu","Momento Mu","t·m",3],["b","Ancho b","cm",30],["h","Peralte h (dirección de M)","cm",30],["num","Varilla #","",6,VSEL],["nb","Barras por cara (en b)","",2],["nh","Barras por cara lateral (en h)","",2],["rec","Recubrimiento libre","cm",4],["est","Estribo #","",3,[2.5,3,4]],["fc","f'c","kg/cm²",250],["fy","fy","kg/cm²",4200]],
  zapata:[["Ps","Carga de servicio P","t",40],["Pu","Carga última Pu","t",56],["c1","Columna c1","cm",30],["c2","Columna c2","cm",30],["qadm","Capacidad admisible","t/m²",15],["Df","Profundidad de desplante","m",1.2],["gam","Peso vol. del relleno","t/m³",1.8],["num","Varilla #","",4,[3,4,5,6]],["hmin","Peralte mínimo","cm",25],["rec","Recubrimiento","cm",7.5],["fc","f'c","kg/cm²",250],["fy","fy","kg/cm²",4200]],
  muros:[["W","Peso total W","t",95],["cs","Coeficiente sísmico c/Q'R","",0.21],["vm","v*m","kg/cm²",3.5],["FC","Factor de carga","",1.1]],
  sismo:[["a0","a0 (PRODISIS)","g",0.22],["c","c meseta","g",0.60],["Ta","Ta","s",0.10],["Tb","Tb","s",0.60],["k","k","",1.5],["r","r","",0.5],["Q","Q","",2],["R0","R0 sobrerresistencia","",2],["rho","ρ redundancia","",1],["alfa","α irregularidad","",1],["T","Periodo T (0 = estimar)","s",0],["sis","Sistema (para T empírico)","",'muros',['marco','muros','acero']],["lim","Distorsión límite","",0.0025]],
  presupuesto:[["proy","Proyecto","","Casa habitación"],["area","Área construida","m²",160],["reg","Ajuste materiales Tijuana","%",10],["ind","Indirectos","%",12],["fin","Financiamiento","%",1],["uti","Utilidad","%",10],["iva","IVA","%",8,[8,16]]],
+ arq:[["hn","Altura de entrepiso","m",2.8],["esl","Espesor de losa","cm",12],["pretil","Altura de pretil","m",0.9],["frente","Calle al lado","",'S',['S']]],
+ entregables:[["proy","Proyecto","","Casa habitación 2 niveles"],["ubic","Ubicación","","Tijuana, B.C."],["prop","Propietario","",""],["elab","Elaboró","","Ing. Miguel Estrada"],["dro","DRO / Corresponsable","","Ing. Miguel Estrada — DRO"],["rev","Revisión","","0"],["ejx","Ejes en X (cm, acumulados)","","0,400,800"],["ejy","Ejes en Y (cm, acumulados)","","0,500,1000"],["nomx","Nombre de ejes X","","1,2,3"],["nomy","Nombre de ejes Y","","A,B,C"]],
  programa:[["monto","Monto del contrato sin IVA","$",970000],["ant","Anticipo","%",30],["per","Estimación cada","sem",2],["dp","El cliente paga en","sem",1],["ret","Fondo de garantía","%",5],["cred","Crédito de proveedores","sem",2],["fmat","Parte de material","%",55],["fmo","Parte de nómina","%",35],["tasa","Tasa anual del financiamiento","%",14],["ds","Días laborables por semana","",6]],
 };
 const TABLAS={
  muros:{cols:[["eje","Eje","t"],["dir","Dir.","s",["X","Y"]],["L","L cm","n"],["t","t cm","n"],["H","H cm","n"],["P","P kg","n"]],def:[["A","X",800,15,260,9000],["C","X",800,15,260,9000],["B","X",400,15,260,6000],["1","Y",1000,15,260,11000],["3","Y",1000,15,260,11000],["2","Y",500,15,260,6000]]},
  sismo:{cols:[["n","Nivel","t"],["W","W t","n"],["z","Altura z m","n"],["he","Entrepiso m","n"],["K","Rigidez t/m (opc.)","n"]],def:[["Planta baja",52,2.8,2.8,0],["Azotea",43,5.6,2.8,0]]},
  presupuesto:{cols:[["rid","Concepto","c"],["q","Cantidad","n"]],def:[["exc-mano",44],["plantilla",22],["cimbra-cim",43],["acero-medio",900],["acero-ligero",2200],["colado-bomba",25],["cimbra-losa",160],["block-15",240],["castillo",125],["dala",108],["firme",80],["aplanado",360],["piso-cer",150],["pintura",640],["imper",85],["salida-elec",70],["salida-hid",18]]},
+ arq:{cols:[["nom","Espacio","t"],["tipo","Tipo","s",["sala","comedor","cocina","recamara","bano","medio_bano","lavanderia","estudio","escalera","pasillo","cochera","bodega"]],["niv","Nivel","n"],["x","X cm","n"],["y","Y cm","n"],["w","Ancho X cm","n"],["l","Largo Y cm","n"],["pu","Puerta","s",["N","S","E","O"]],["ve","Ventana","s",["—","N","S","E","O"]]],def:[
+   ["Sala","sala",1,0,0,400,500,"S","S"],["Comedor","comedor",1,400,0,400,500,"O","S"],["Medio baño","medio_bano",1,0,500,200,250,"E","O"],["Estudio","estudio",1,0,750,200,250,"E","O"],["Escalera","escalera",1,200,500,200,500,"S","—"],["Cocina","cocina",1,400,500,400,300,"O","E"],["Lavandería","lavanderia",1,400,800,400,200,"S","N"],
+   ["Recámara principal","recamara",2,0,0,400,450,"N","S"],["Recámara 2","recamara",2,400,0,400,450,"N","S"],["Pasillo","pasillo",2,0,450,800,100,"S","—"],["Baño","bano",2,0,550,200,250,"S","O"],["Escalera","escalera",2,200,550,200,450,"S","—"],["Recámara 3","recamara",2,400,550,400,450,"S","N"],["Bodega","bodega",2,0,800,200,200,"E","—"]]},
  programa:{cols:[["id","ID","t"],["nom","Actividad","t"],["dur","Días","n"],["pred","Predecesoras","t"],["costo","Costo $","n"]],def:[["A01","Excavación y plantillas",6,"",40000],["A02","Cimentación (acero, cimbra, colado)",8,"A01",120000],["A03","Muros de block y castillos",14,"A02",160000],["A04","Losa de entrepiso",8,"A03",110000],["A05","Muros planta alta",10,"A04",120000],["A06","Losa de azotea",8,"A05",100000],["A07","Instalaciones",12,"A04",70000],["A08","Aplanados y firmes",12,"A06,A07",80000],["A09","Impermeabilización",3,"A06",30000],["A10","Pisos y pintura",12,"A08",50000]]},
 };
 const val=(p,k)=>{const e=document.getElementById(`${p}-${k}`);if(!e)return null;const f=FORMS[p].find(x=>x[0]===k);return typeof f[3]==="string"?e.value:parseFloat(e.value)};
@@ -429,7 +481,7 @@ function buildTable(p){
   const T=TABLAS[p];TD[p]=st.get("t_"+p)||T.def.map(r=>r.slice());drawTable(p);
 }
 function drawTable(p,extra){
-  const T=TABLAS[p],el=$(`#${{muros:"m",sismo:"s",presupuesto:"pr",programa:"pg"}[p]}-tab`);
+  const T=TABLAS[p],el=$(`#${{muros:"m",sismo:"s",presupuesto:"pr",programa:"pg",arq:"a"}[p]}-tab`);
   const head=`<tr>${T.cols.map(c=>`<th>${c[1]}</th>`).join("")}${extra?extra.head:""}<th></th></tr>`;
   el.innerHTML=head+TD[p].map((r,i)=>`<tr>${T.cols.map((c,j)=>{const v=r[j];
     if(c[2]==="s")return `<td><select data-r="${i}" data-c="${j}">${c[3].map(o=>`<option ${o===v?"selected":""}>${o}</option>`).join("")}</select></td>`;
@@ -460,10 +512,10 @@ function niceRange(lo,hi,n=5){const st=niceMax((hi-lo)/n)||1,a=Math.floor(lo/st)
 function niceMax(v){if(v<=0)return 1;const e=Math.pow(10,Math.floor(Math.log10(v))),f=v/e;return(f<=1?1:f<=2?2:f<=2.5?2.5:f<=5?5:10)*e}
 
 /* ---- paneles ---- */
-const RUN={};
+const RUN={},RES={};
 RUN.trabe=()=>{const g=k=>val("trabe",k),b=g("b"),h=g("h"),fc=g("fc"),fy=g("fy"),est=g("est"),db0=1.588,d=h-g("rec")-VAR[est][0]-db0/2;
   const fl=flexion(g("Mu")*1e5,b,d,fc,fy),co=cortante(g("Vu")*1000,b,d,fc,fy,est,g("ramas"));
-  const pr=isNaN(fl.As)?null:proponer(fl.As,b,g("rec"),est),ok=fl.ok&&co.ok&&!!pr;
+  const pr=isNaN(fl.As)?null:proponer(fl.As,b,g("rec"),est),ok=fl.ok&&co.ok&&!!pr;RES.trabe={L:g("L"),Mu:g("Mu"),Vu:g("Vu"),b,h,rec:g("rec"),d,fc,fy,est,ramas:g("ramas"),fl,co,pr,ok};
   verdict($("#t-ver"),ok,ok?`Cumple — ${pr.n} vars #${pr.num} (${VAR[pr.num][3]}) abajo, 2 #${Math.min(pr.num,4)} arriba, E#${est} @ ${co.s} cm`:(!pr&&!isNaN(fl.As)?"No caben las varillas en el ancho: aumenta b o usa dos lechos":"No cumple: revisa las notas"));
   $("#t-kpi").innerHTML=kpis([[nf(fl.As),"As de diseño cm²"],[pr?nf(pr.As):"—","As colocada cm²"],[isFinite(fl.phiMn)?nf(fl.phiMn/1e5):"—","φMn t·m"],[nf(co.phiVn/1000),"φVn t"],[`${co.s} cm`,"Separación de estribos"]]);
   $("#t-led").innerHTML=led([["Peralte efectivo d",nf(d,1)+" cm","h − rec − estribo − db/2 (#5 supuesta)"],["As requerida",nf(fl.Asr)+" cm²","ρ = 0.85f'c/fy·(1−√(1−2Rn/0.85f'c)), ACI 22.2"],["As mínima",nf(fl.Asmin)+" cm²","max(0.8√f'c, 14)·b·d/fy, ACI 9.6.1.2"],["As máxima (εt = 0.005)",nf(fl.Asmax)+" cm²","ACI 21.2.2"],["εt y φ",fl.et?`${nf(fl.et,4)} / ${nf(fl.phi,3)}`:"—","ACI 21.2.2"],["Vc",nf(co.Vc/1000)+" t","0.53λ√f'c·b·d, ACI 22.5.5.1"],["Vs requerido",nf(co.Vs/1000)+" t","Vu/φ − Vc, φ = 0.75"],["s requerida / s máx.",`${isFinite(co.sreq)?nf(co.sreq,1):"—"} / ${nf(co.smax,1)} cm`,"ACI 9.7.6.2.2"],["s por Av mínimo",nf(co.savmin,1)+" cm","Av ≥ max(0.2√f'c, 3.5)·b·s/fyt, ACI 9.6.3.4"]]);
@@ -477,7 +529,7 @@ RUN.trabe=()=>{const g=k=>val("trabe",k),b=g("b"),h=g("h"),fc=g("fc"),fy=g("fy")
   $("#t-svg").innerHTML=s;
 };
 RUN.columna=()=>{const g=k=>val("columna",k),b=g("b"),h=g("h"),fc=g("fc"),fy=g("fy");
-  const capas=capasRect(b,h,g("num"),g("nb"),g("nh"),g("rec"),g("est")),r=revisarCol(g("Pu")*1000,g("Mu")*1e5,b,h,capas,fc,fy),nbar=2*g("nb")+2*Math.max(0,g("nh")-2);
+  const capas=capasRect(b,h,g("num"),g("nb"),g("nh"),g("rec"),g("est")),r=revisarCol(g("Pu")*1000,g("Mu")*1e5,b,h,capas,fc,fy),nbar=2*g("nb")+2*Math.max(0,g("nh")-2);RES.columna={Pu:g("Pu"),Mu:g("Mu"),b,h,num:g("num"),nb:g("nb"),nh:g("nh"),rec:g("rec"),est:g("est"),fc,fy,r,nbar,s:estCol(b,h,g("num"),g("est"))};
   verdict($("#c-ver"),r.ok,r.ok?`Cumple — D/C = ${nf(r.DC)} con ${nbar} vars #${g("num")} y E#${g("est")} @ ${estCol(b,h,g("num"),g("est"))} cm`:`No cumple — ${r.notas[0]||`D/C = ${nf(r.DC)} > 1`}`);
   $("#c-kpi").innerHTML=kpis([[nf(r.DC),"Demanda / capacidad"],[nf(r.phiMn/1e5),"φMn a Pu, t·m"],[nf(r.Pmax/1000,1),"φPn,max t"],[nf(r.rho*100)+" %","Cuantía ρ"],[`${estCol(b,h,g("num"),g("est"))} cm`,"Estribos s máx. (25.7.2)"]]);
   const pts=r.pts,mM=niceMax(Math.max(...pts.map(p=>p.M/1e5),g("Mu"))*1.05),Pmx=niceMax(Math.max(...pts.map(p=>p.P/1000))*1.02),Pmn=Math.min(...pts.map(p=>p.P/1000));
@@ -487,7 +539,8 @@ RUN.columna=()=>{const g=k=>val("columna",k),b=g("b"),h=g("h"),fc=g("fc"),fy=g("
   $("#c-svg").innerHTML=s;notes($("#c-notes"),[...r.notas,"φ varía de 0.65 (compresión controlada) a 0.90 (tensión controlada) según εt; φPn,max = 0.80·0.65·P0 (ACI 22.4.2.1).","Revisa esbeltez (ACI 6.2.5) y, en marcos dúctiles, columna fuerte – viga débil y confinamiento (ACI 18.7)."]);
 };
 RUN.zapata=()=>{const g=k=>val("zapata",k),z=zapata(g("Ps"),g("Pu"),g("c1"),g("c2"),g("qadm"),g("Df"),g("gam"),g("fc"),g("fy"),g("rec"),g("num"),g("hmin"));
-  if(z.err){verdict($("#z-ver"),false,z.err);return}
+  if(z.err){verdict($("#z-ver"),false,z.err);RES.zapata=null;return}
+  RES.zapata={Ps:g("Ps"),Pu:g("Pu"),c1:g("c1"),c2:g("c2"),qadm:g("qadm"),Df:g("Df"),gam:g("gam"),num:g("num"),fc:g("fc"),fy:g("fy"),z};
   verdict($("#z-ver"),z.ok,z.ok?`Cumple — ${z.B} × ${z.L} × ${z.h} cm, parrilla #${g("num")} @ ${z.s} cm ambos sentidos`:"No cumple el cortante: revisa datos");
   $("#z-kpi").innerHTML=kpis([[`${z.B}×${z.L}`,"Planta cm"],[`${z.h} cm`,"Peralte total"],[nf(z.qs),"q servicio t/m²"],[`#${g("num")} @ ${z.s}`,"Parrilla"],[nf(z.Vp/z.phVp),"D/C punzonamiento"]]);
   $("#z-led").innerHTML=led([["Capacidad neta",nf(g("qadm")-g("gam")*g("Df"))+" t/m²","q adm − γ·Df"],["Área requerida",nf(g("Ps")/(g("qadm")-g("gam")*g("Df")))+" m²","P servicio / q neta"],["Presión última qu",nf(z.qu)+" t/m²","Pu / A"],["Punzonamiento Vu / φVc",`${nf(z.Vp/1000)} / ${nf(z.phVp/1000)} t`,"b0 a d/2, vc = min(1.06, 0.53(1+2/β), 0.27(αs·d/b0+2))√f'c"],["Cortante 1 dirección Vu / φVc",`${nf(z.V1/1000)} / ${nf(z.phV1/1000)} t`,"a d de la cara, 0.53√f'c·b·d"],["Mu en la cara",nf(z.Mu/1e5)+" t·m",""],["As colocada por sentido",nf(z.As)+` cm² (${z.n} vars)`,"max(flexión, 0.0018·b·h)"]]);
@@ -503,6 +556,7 @@ RUN.zapata=()=>{const g=k=>val("zapata",k),z=zapata(g("Ps"),g("Pu"),g("c1"),g("c
 RUN.muros=()=>{const g=k=>val("muros",k),vm=g("vm"),Vu=g("FC")*g("cs")*g("W")*1000,res=[];let rows=[];
   for(const dir of["X","Y"]){const ms=TD.muros.filter(r=>r[1]===dir);const VR=ms.reduce((s,r)=>s+FAE(r[2],r[4])*VmR(r[2],r[3],r[5],vm),0);res.push({dir,VR,ok:VR>=Vu});
     rows.push([`<b>Dirección ${dir}</b>`,`${nf(VR/1000)} t`,`ΣFAE·VmR de ${ms.length} muros`]);ms.forEach(r=>rows.push([`Muro ${esc(r[0])}: L = ${r[2]} cm, FAE = ${nf(FAE(r[2],r[4]),3)}`,`${nf(VmR(r[2],r[3],r[5],vm)/1000)} t`,""]))}
+  RES.muros={Vu,res,vm,W:g("W"),cs:g("cs"),FC:g("FC"),muros:TD.muros.map(r=>({eje:r[0],dir:r[1],L:r[2],t:r[3],H:r[4],P:r[5],FAE:FAE(r[2],r[4]),VmR:VmR(r[2],r[3],r[5],vm)}))};
   $("#m-kpi").innerHTML=kpis([[nf(Vu/1000)+" t","Cortante último FC·c·W"],...res.map(r=>[nf(r.VR/1000)+" t",`Resistencia dir. ${r.dir}`])]);
   $("#m-ver").innerHTML=res.map(r=>`<div class="verdict ${r.ok?"ok":"bad"}" style="margin-bottom:6px">Dirección ${r.dir}: ${r.ok?"cumple":"no cumple"} (D/C = ${nf(Vu/r.VR)})</div>`).join("");
   $("#m-led").innerHTML=led(rows);
@@ -516,7 +570,7 @@ RUN.sismo=()=>{const g=k=>val("sismo",k),par={Q:g("Q"),R0:g("R0"),rho:g("rho"),a
   if(!ae)ae=espCFE(g("a0"),g("c"),g("Ta"),g("Tb"),g("k"),g("r"));
   const niv=TD.sismo.map(r=>({n:r[0],W:+r[1],z:+r[2],he:+r[3],K:+r[4]})).filter(n=>n.W>0&&n.z>0);
   if(!niv.length){$("#s-kpi").innerHTML="";return}
-  const R=estatico(niv,ae,par),lim=g("lim");
+  const R=estatico(niv,ae,par),lim=g("lim");RES.sismo={R,niv,orig,par,lim};
   $("#s-kpi").innerHTML=kpis([[nf(R.T,3)+" s","Periodo T"],[nf(R.c,4),"c/(Q'R)"],[nf(R.V)+" t","Cortante basal"],[nf(R.W)+" t","Peso total"],[nf(R.amp,2),"Q'·R (amplifica despl.)"]]);
   const rows=niv.map((n,i)=>[`${esc(n.n)} · z = ${n.z} m`,`F = ${nf(R.F[i])} t · V = ${nf(R.Vi[i])} t`,R.dist?`Δ = ${nf(R.dist[i].d*100)} cm · γ = ${nf(R.dist[i].g,4)} ${R.dist[i].g<=lim?"≤":">"} ${lim} ${R.dist[i].g<=lim?"✓":"✗"}`:""]);
   $("#s-led").innerHTML=led(rows);
@@ -531,7 +585,7 @@ RUN.presupuesto=(soft)=>{if(!MO){return}const g=k=>val("presupuesto",k),reg=g("r
   if(!soft)drawTable("presupuesto",{head:"<th>P.U.</th><th>Importe</th>",row:i=>`<td class="n" id="pr-pu-${i}"></td><td class="n" id="pr-im-${i}"></td>`});
   let sub=0,cd=0;const part={};rows.forEach((x,i)=>{if(!x.a)return;const pu=x.a.cd*k,im=pu*x.q;sub+=im;cd+=x.a.cd*x.q;part[x.a.r.partida]=(part[x.a.r.partida]||0)+im;
     const a=document.getElementById("pr-pu-"+i),b=document.getElementById("pr-im-"+i);if(a)a.textContent="$"+nf(pu);if(b)b.textContent="$"+nf(im)});
-  const iva=sub*g("iva")/100,area=g("area");LAST_PR={rows,sub,iva,k,part};
+  const iva=sub*g("iva")/100,area=g("area");LAST_PR={rows,sub,iva,k,part,cd,area,g:{reg,ind:g("ind"),fin:g("fin"),uti:g("uti"),iva:g("iva"),proy:g("proy")}};
   $("#pr-kpi").innerHTML=kpis([["$"+nf(sub,0),"Subtotal sin IVA"],["$"+nf(sub+iva,0),`Total con IVA ${g("iva")} %`],[area>0?"$"+nf(sub/area,0):"—","Costo por m²"],[nf(k,4),"Factor de sobrecosto"],["$"+nf(cd,0),"Costo directo"]]);
   const ent=Object.entries(part).sort((a,b)=>b[1]-a[1]),mx=niceMax(Math.max(1,...ent.map(e=>e[1]))),bh=Math.min(30,180/Math.max(1,ent.length));
   $("#pr-svg").setAttribute("viewBox",`0 0 520 ${30+ent.length*(bh+8)}`);
@@ -542,7 +596,7 @@ RUN.programa=()=>{const g=k=>val("programa",k),ds=g("ds")||6;
   const acts=TD.programa.map(r=>({id:String(r[0]).trim(),nom:r[1],dur:+r[2]||0,pred:String(r[3]||"").split(/[,; ]+/).map(s=>s.trim()).filter(Boolean),costo:+r[4]||0})).filter(a=>a.id);
   let fin;try{fin=cpm(acts)}catch(e){$("#pg-kpi").innerHTML=`<div class="verdict bad">${esc(e.message)}</div>`;$("#pg-gantt").innerHTML="";$("#pg-flujo").innerHTML="";return}
   const sem=costoSemana(acts,fin,ds),pg={ant:g("ant")/100,per:Math.max(1,g("per")|0),dp:Math.max(0,g("dp")|0),ret:g("ret")/100,cred:Math.max(0,g("cred")|0),fmat:g("fmat")/100,fmo:g("fmo")/100,tasa:g("tasa")/100};
-  const F=flujo(sem,g("monto"),pg),costo=sem.reduce((a,b)=>a+b,0);LAST_PG={acts,F,sem};
+  const F=flujo(sem,g("monto"),pg),costo=sem.reduce((a,b)=>a+b,0);LAST_PG={acts,F,sem,fin,ds,pg,monto:g("monto")};
   $("#pg-kpi").innerHTML=kpis([[nf(fin,1),"Días hábiles"],[sem.length,"Semanas de obra"],["$"+nf(F.fin,0),"Financiamiento máximo"],["$"+nf(F.cf,0),"Costo del financiamiento"],[nf(costo?F.cf/costo*100:0,2)+" %","% sobre el costo"],["$"+nf(F.util,0),"Margen bruto (contrato − costo)"]]);
   // gantt
   const sorted=acts.slice().sort((a,b)=>a.IC-b.IC||a.id.localeCompare(b.id)),H=40+sorted.length*24,X=t=>230+t/Math.max(fin,1)*750;
@@ -574,7 +628,9 @@ $("#tabs").onclick=e=>{const b=e.target.closest("button");if(b)setTab(b.dataset.
 
 /* ---- arranque ---- */
 Object.keys(FORMS).forEach(buildForm);
-["muros","sismo","presupuesto","programa"].forEach(buildTable);
+["muros","sismo","presupuesto","programa","arq"].forEach(buildTable);
+RUN.entregables=()=>{};RUN.arq=()=>{if(window.VC_ARQ)VC_ARQ.render()};
+$("#a-add").onclick=()=>{TD.arq.push(["Nuevo espacio","recamara",1,0,0,300,300,"S","—"]);st.set("t_arq",TD.arq);drawTable("arq");RUN.arq()};
 ["trabe","columna","zapata","muros","sismo","programa"].forEach(p=>{try{RUN[p]()}catch(e){console.error(p,e)}});
 setTab(st.get("tab")||"trabe");
 (async()=>{
@@ -586,5 +642,8 @@ setTab(st.get("tab")||"trabe");
   $("#pr-src").textContent="No se pudo cargar la base de precios. Abre la página con conexión a internet.";
 })();
 </script>
+<script src="entregables.js"></script>
+<script src="arquitectura.js"></script>
+<script src="proyectos.js"></script>
 </body>
 </html>
