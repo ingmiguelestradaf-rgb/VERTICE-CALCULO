@@ -1,0 +1,934 @@
+{
+ "meta": {
+  "fecha": "2026-10-19",
+  "zona": "Tijuana, B.C. — Zona Libre de la Frontera Norte",
+  "sm_zlfn": 440.87,
+  "uma": 117.31,
+  "fuentes": [
+   {
+    "titulo": "Salarios mínimos 2026 (ZLFN $440.87/día, general y profesionales) — IDC",
+    "url": "https://idconline.mx/laboral/2025/12/09/ya-es-oficial-el-monto-de-los-salarios-minimos-del-2026"
+   },
+   {
+    "titulo": "UMA 2026 $117.31/día desde 1 feb 2026 — IDC",
+    "url": "https://idconline.mx/laboral/2026/01/09/valor-uma-2026-inegi-publica-nuevos-montos"
+   },
+   {
+    "titulo": "Factores de cuotas IMSS e Infonavit 2026 (tabla CEAV) — IDC",
+    "url": "https://idconline.mx/seguridad-social/2026/02/09/factores-de-las-cuotas-y-aportaciones-2026"
+   },
+   {
+    "titulo": "ISN Baja California 4.25 % (Ley de Hacienda del Estado, art. 151-16) — IDC",
+    "url": "https://idconline.mx/fiscal/impuestos-sobre-nominas/baja-california"
+   },
+   {
+    "titulo": "Sueldo de albañil en Tijuana — Indeed (jun 2026)",
+    "url": "https://mx.indeed.com/career/alba%C3%B1il/salaries/Tijuana--B.C."
+   }
+  ]
+ },
+ "fsr": {
+  "aguinaldo_dias": 15,
+  "vacaciones_dias": 12,
+  "prima_vacacional": 0.25,
+  "domingos": 52,
+  "festivos": 7,
+  "dias_costumbre": 3,
+  "dias_clima": 2,
+  "nota_dias": "Festivos LFT art. 74 (7 en 2026). Costumbre: 3 de mayo, 12 de diciembre, Semana Santa (ajústalo). Clima: lluvia en invierno en Tijuana.",
+  "imss": {
+   "riesgo_trabajo": 7.58875,
+   "em_cuota_fija": 20.4,
+   "em_excedente": 1.1,
+   "prestaciones_dinero": 0.7,
+   "gastos_medicos_pens": 1.05,
+   "invalidez_vida": 1.75,
+   "guarderias": 1.0,
+   "retiro": 2.0,
+   "ceav_2026": [
+    [
+     1.0,
+     3.15
+    ],
+    [
+     1.5,
+     3.676
+    ],
+    [
+     2.0,
+     4.851
+    ],
+    [
+     2.5,
+     5.556
+    ],
+    [
+     3.0,
+     6.026
+    ],
+    [
+     3.5,
+     6.361
+    ],
+    [
+     4.0,
+     6.613
+    ],
+    [
+     999,
+     7.513
+    ]
+   ],
+   "nota": "Riesgo de trabajo: prima media clase V (construcción) para empresas que se inscriben; usa la prima de tu registro patronal. CEAV: primer renglón aplica solo a salario mínimo; los demás por SBC en UMA."
+  },
+  "infonavit": 5.0,
+  "isn": 4.25
+ },
+ "categorias": [
+  {
+   "id": "peon",
+   "nombre": "Peón / ayudante general",
+   "sd_min_legal": 440.87,
+   "sd_ref_min": 470,
+   "sd_ref_max": 540,
+   "nota": "Referencia de mercado Tijuana (estimación inicial Vértice, oct 2026). Sustitúyela con tu lista de raya."
+  },
+  {
+   "id": "of-albanil",
+   "nombre": "Oficial albañil",
+   "sd_min_legal": 440.87,
+   "sd_ref_min": 560,
+   "sd_ref_max": 700,
+   "nota": "Indeed Tijuana (jun 2026): $17,706/mes promedio ≈ $590/día. Rango Vértice; confirma con tu lista de raya."
+  },
+  {
+   "id": "of-fierrero",
+   "nombre": "Oficial fierrero",
+   "sd_min_legal": 440.87,
+   "sd_ref_min": 580,
+   "sd_ref_max": 720,
+   "nota": "Referencia de mercado Tijuana (estimación inicial Vértice, oct 2026). Sustitúyela con tu lista de raya."
+  },
+  {
+   "id": "of-carpintero",
+   "nombre": "Oficial carpintero de cimbra",
+   "sd_min_legal": 440.87,
+   "sd_ref_min": 580,
+   "sd_ref_max": 720,
+   "nota": "Referencia de mercado Tijuana (estimación inicial Vértice, oct 2026). Sustitúyela con tu lista de raya."
+  },
+  {
+   "id": "of-electricista",
+   "nombre": "Oficial electricista",
+   "sd_min_legal": 440.87,
+   "sd_ref_min": 620,
+   "sd_ref_max": 800,
+   "nota": "Referencia de mercado Tijuana (estimación inicial Vértice, oct 2026). Sustitúyela con tu lista de raya."
+  },
+  {
+   "id": "of-plomero",
+   "nombre": "Oficial plomero",
+   "sd_min_legal": 440.87,
+   "sd_ref_min": 620,
+   "sd_ref_max": 800,
+   "nota": "Referencia de mercado Tijuana (estimación inicial Vértice, oct 2026). Sustitúyela con tu lista de raya."
+  },
+  {
+   "id": "of-yesero",
+   "nombre": "Oficial yesero / tablaroquero",
+   "sd_min_legal": 440.87,
+   "sd_ref_min": 560,
+   "sd_ref_max": 720,
+   "nota": "Referencia de mercado Tijuana (estimación inicial Vértice, oct 2026). Sustitúyela con tu lista de raya."
+  },
+  {
+   "id": "of-pintor",
+   "nombre": "Oficial pintor",
+   "sd_min_legal": 440.87,
+   "sd_ref_min": 540,
+   "sd_ref_max": 680,
+   "nota": "Referencia de mercado Tijuana (estimación inicial Vértice, oct 2026). Sustitúyela con tu lista de raya."
+  },
+  {
+   "id": "of-azulejero",
+   "nombre": "Oficial colocador de piso y azulejo",
+   "sd_min_legal": 440.87,
+   "sd_ref_min": 580,
+   "sd_ref_max": 740,
+   "nota": "Referencia de mercado Tijuana (estimación inicial Vértice, oct 2026). Sustitúyela con tu lista de raya."
+  },
+  {
+   "id": "of-soldador",
+   "nombre": "Soldador / montador de estructura",
+   "sd_min_legal": 440.87,
+   "sd_ref_min": 700,
+   "sd_ref_max": 900,
+   "nota": "Referencia de mercado Tijuana (estimación inicial Vértice, oct 2026). Sustitúyela con tu lista de raya."
+  },
+  {
+   "id": "of-impermeabilizador",
+   "nombre": "Oficial impermeabilizador",
+   "sd_min_legal": 440.87,
+   "sd_ref_min": 540,
+   "sd_ref_max": 680,
+   "nota": "Referencia de mercado Tijuana (estimación inicial Vértice, oct 2026). Sustitúyela con tu lista de raya."
+  },
+  {
+   "id": "operador",
+   "nombre": "Operador de maquinaria ligera/pesada",
+   "sd_min_legal": 440.87,
+   "sd_ref_min": 700,
+   "sd_ref_max": 950,
+   "nota": "Referencia de mercado Tijuana (estimación inicial Vértice, oct 2026). Sustitúyela con tu lista de raya."
+  },
+  {
+   "id": "cabo",
+   "nombre": "Cabo de oficios",
+   "sd_min_legal": 440.87,
+   "sd_ref_min": 750,
+   "sd_ref_max": 950,
+   "nota": "Referencia de mercado Tijuana (estimación inicial Vértice, oct 2026). Sustitúyela con tu lista de raya."
+  },
+  {
+   "id": "maestro",
+   "nombre": "Maestro de obra",
+   "sd_min_legal": 440.87,
+   "sd_ref_min": 900,
+   "sd_ref_max": 1200,
+   "nota": "Referencia de mercado Tijuana (estimación inicial Vértice, oct 2026). Sustitúyela con tu lista de raya."
+  }
+ ],
+ "cuadrillas": [
+  {
+   "id": "c-peon",
+   "nombre": "1 peón",
+   "integrantes": [
+    {
+     "cat": "peon",
+     "cant": 1
+    }
+   ]
+  },
+  {
+   "id": "c-alb",
+   "nombre": "1 oficial albañil + 1 peón (+0.1 cabo)",
+   "integrantes": [
+    {
+     "cat": "of-albanil",
+     "cant": 1
+    },
+    {
+     "cat": "peon",
+     "cant": 1
+    },
+    {
+     "cat": "cabo",
+     "cant": 0.1
+    }
+   ]
+  },
+  {
+   "id": "c-alb2",
+   "nombre": "1 oficial albañil + 2 peones (+0.1 cabo)",
+   "integrantes": [
+    {
+     "cat": "of-albanil",
+     "cant": 1
+    },
+    {
+     "cat": "peon",
+     "cant": 2
+    },
+    {
+     "cat": "cabo",
+     "cant": 0.1
+    }
+   ]
+  },
+  {
+   "id": "c-fierro",
+   "nombre": "1 fierrero + 1 ayudante (+0.1 cabo)",
+   "integrantes": [
+    {
+     "cat": "of-fierrero",
+     "cant": 1
+    },
+    {
+     "cat": "peon",
+     "cant": 1
+    },
+    {
+     "cat": "cabo",
+     "cant": 0.1
+    }
+   ]
+  },
+  {
+   "id": "c-cimbra",
+   "nombre": "1 carpintero + 1 ayudante (+0.1 cabo)",
+   "integrantes": [
+    {
+     "cat": "of-carpintero",
+     "cant": 1
+    },
+    {
+     "cat": "peon",
+     "cant": 1
+    },
+    {
+     "cat": "cabo",
+     "cant": 0.1
+    }
+   ]
+  },
+  {
+   "id": "c-colado",
+   "nombre": "Colado: 2 oficiales + 6 peones + cabo",
+   "integrantes": [
+    {
+     "cat": "of-albanil",
+     "cant": 2
+    },
+    {
+     "cat": "peon",
+     "cant": 6
+    },
+    {
+     "cat": "cabo",
+     "cant": 1
+    }
+   ]
+  },
+  {
+   "id": "c-elec",
+   "nombre": "1 electricista + 1 ayudante",
+   "integrantes": [
+    {
+     "cat": "of-electricista",
+     "cant": 1
+    },
+    {
+     "cat": "peon",
+     "cant": 1
+    }
+   ]
+  },
+  {
+   "id": "c-plom",
+   "nombre": "1 plomero + 1 ayudante",
+   "integrantes": [
+    {
+     "cat": "of-plomero",
+     "cant": 1
+    },
+    {
+     "cat": "peon",
+     "cant": 1
+    }
+   ]
+  },
+  {
+   "id": "c-yeso",
+   "nombre": "1 tablaroquero + 1 ayudante",
+   "integrantes": [
+    {
+     "cat": "of-yesero",
+     "cant": 1
+    },
+    {
+     "cat": "peon",
+     "cant": 1
+    }
+   ]
+  },
+  {
+   "id": "c-pint",
+   "nombre": "1 pintor",
+   "integrantes": [
+    {
+     "cat": "of-pintor",
+     "cant": 1
+    }
+   ]
+  },
+  {
+   "id": "c-piso",
+   "nombre": "1 azulejero + 1 ayudante",
+   "integrantes": [
+    {
+     "cat": "of-azulejero",
+     "cant": 1
+    },
+    {
+     "cat": "peon",
+     "cant": 1
+    }
+   ]
+  },
+  {
+   "id": "c-imper",
+   "nombre": "1 impermeabilizador + 1 ayudante",
+   "integrantes": [
+    {
+     "cat": "of-impermeabilizador",
+     "cant": 1
+    },
+    {
+     "cat": "peon",
+     "cant": 1
+    }
+   ]
+  },
+  {
+   "id": "c-montaje",
+   "nombre": "Montaje acero: 2 soldadores + 2 ayudantes + cabo",
+   "integrantes": [
+    {
+     "cat": "of-soldador",
+     "cant": 2
+    },
+    {
+     "cat": "peon",
+     "cant": 2
+    },
+    {
+     "cat": "cabo",
+     "cant": 1
+    }
+   ]
+  }
+ ],
+ "rendimientos": [
+  {
+   "id": "exc-mano",
+   "partida": "Cimentación",
+   "concepto": "Excavación a mano en material tipo II hasta 2 m",
+   "unidad": "m³",
+   "cuadrilla": "c-peon",
+   "rend_min": 3.0,
+   "rend_max": 4.5,
+   "materiales": [],
+   "equipo": [],
+   "nota": "Rango práctico de referencia en México por jornada de 8 h; calíbralo con tus datos de obra (ObraLab › calc-rendimiento)."
+  },
+  {
+   "id": "relleno",
+   "partida": "Cimentación",
+   "concepto": "Relleno compactado con bailarina en capas de 20 cm",
+   "unidad": "m³",
+   "cuadrilla": "c-alb2",
+   "rend_min": 6,
+   "rend_max": 10,
+   "materiales": [],
+   "equipo": [
+    {
+     "id": "bailarina",
+     "cant": 0.125
+    }
+   ],
+   "nota": "Rango práctico de referencia en México por jornada de 8 h; calíbralo con tus datos de obra (ObraLab › calc-rendimiento)."
+  },
+  {
+   "id": "plantilla",
+   "partida": "Cimentación",
+   "concepto": "Plantilla de concreto f'c=100 kg/cm² de 5 cm",
+   "unidad": "m²",
+   "cuadrilla": "c-alb2",
+   "rend_min": 25,
+   "rend_max": 35,
+   "materiales": [
+    {
+     "id": "cemento-cpc30r-bulto",
+     "cant": 0.28
+    },
+    {
+     "id": "arena",
+     "cant": 0.03
+    },
+    {
+     "id": "grava-3-4",
+     "cant": 0.04
+    }
+   ],
+   "equipo": [],
+   "nota": "Rango práctico de referencia en México por jornada de 8 h; calíbralo con tus datos de obra (ObraLab › calc-rendimiento)."
+  },
+  {
+   "id": "cimbra-cim",
+   "partida": "Cimentación",
+   "concepto": "Cimbra común en zapatas y contratrabes",
+   "unidad": "m²",
+   "cuadrilla": "c-cimbra",
+   "rend_min": 8,
+   "rend_max": 11,
+   "materiales": [],
+   "equipo": [],
+   "nota": "Rango práctico de referencia en México por jornada de 8 h; calíbralo con tus datos de obra (ObraLab › calc-rendimiento)."
+  },
+  {
+   "id": "acero-ligero",
+   "partida": "Estructura",
+   "concepto": "Habilitado y armado de acero #3 y #4",
+   "unidad": "kg",
+   "cuadrilla": "c-fierro",
+   "rend_min": 180,
+   "rend_max": 250,
+   "materiales": [
+    {
+     "id": "varilla-3-8",
+     "cant": 0.00105
+    },
+    {
+     "id": "alambre-recocido",
+     "cant": 0.02
+    }
+   ],
+   "equipo": [],
+   "nota": "Rango práctico de referencia en México por jornada de 8 h; calíbralo con tus datos de obra (ObraLab › calc-rendimiento)."
+  },
+  {
+   "id": "acero-medio",
+   "partida": "Estructura",
+   "concepto": "Habilitado y armado de acero #5 a #8",
+   "unidad": "kg",
+   "cuadrilla": "c-fierro",
+   "rend_min": 280,
+   "rend_max": 380,
+   "materiales": [
+    {
+     "id": "varilla-1-2",
+     "cant": 0.00105
+    },
+    {
+     "id": "alambre-recocido",
+     "cant": 0.015
+    }
+   ],
+   "equipo": [],
+   "nota": "Rango práctico de referencia en México por jornada de 8 h; calíbralo con tus datos de obra (ObraLab › calc-rendimiento)."
+  },
+  {
+   "id": "cimbra-col",
+   "partida": "Estructura",
+   "concepto": "Cimbra de columnas acabado común",
+   "unidad": "m²",
+   "cuadrilla": "c-cimbra",
+   "rend_min": 7,
+   "rend_max": 9,
+   "materiales": [],
+   "equipo": [],
+   "nota": "Rango práctico de referencia en México por jornada de 8 h; calíbralo con tus datos de obra (ObraLab › calc-rendimiento)."
+  },
+  {
+   "id": "cimbra-trabe",
+   "partida": "Estructura",
+   "concepto": "Cimbra de trabes acabado común",
+   "unidad": "m²",
+   "cuadrilla": "c-cimbra",
+   "rend_min": 7,
+   "rend_max": 10,
+   "materiales": [],
+   "equipo": [],
+   "nota": "Rango práctico de referencia en México por jornada de 8 h; calíbralo con tus datos de obra (ObraLab › calc-rendimiento)."
+  },
+  {
+   "id": "cimbra-losa",
+   "partida": "Estructura",
+   "concepto": "Cimbra de losa maciza con puntales",
+   "unidad": "m²",
+   "cuadrilla": "c-cimbra",
+   "rend_min": 10,
+   "rend_max": 14,
+   "materiales": [],
+   "equipo": [],
+   "nota": "Rango práctico de referencia en México por jornada de 8 h; calíbralo con tus datos de obra (ObraLab › calc-rendimiento)."
+  },
+  {
+   "id": "colado-bomba",
+   "partida": "Estructura",
+   "concepto": "Colado de concreto premezclado bombeado y vibrado",
+   "unidad": "m³",
+   "cuadrilla": "c-colado",
+   "rend_min": 35,
+   "rend_max": 60,
+   "materiales": [
+    {
+     "id": "premezclado-250",
+     "cant": 1.03
+    }
+   ],
+   "equipo": [
+    {
+     "id": "vibrador",
+     "cant": 0.022222222222222223
+    },
+    {
+     "id": "bomba-pluma",
+     "cant": 1
+    }
+   ],
+   "nota": "Rango práctico de referencia en México por jornada de 8 h; calíbralo con tus datos de obra (ObraLab › calc-rendimiento)."
+  },
+  {
+   "id": "colado-trompo",
+   "partida": "Estructura",
+   "concepto": "Concreto hecho en obra con revolvedora, colado y vibrado",
+   "unidad": "m³",
+   "cuadrilla": "c-colado",
+   "rend_min": 6,
+   "rend_max": 9,
+   "materiales": [
+    {
+     "id": "cemento-cpc30r-bulto",
+     "cant": 7.5
+    },
+    {
+     "id": "arena",
+     "cant": 0.5
+    },
+    {
+     "id": "grava-3-4",
+     "cant": 0.65
+    }
+   ],
+   "equipo": [
+    {
+     "id": "revolvedora",
+     "cant": 0.14285714285714285
+    },
+    {
+     "id": "vibrador",
+     "cant": 0.14285714285714285
+    }
+   ],
+   "nota": "Rango práctico de referencia en México por jornada de 8 h; calíbralo con tus datos de obra (ObraLab › calc-rendimiento)."
+  },
+  {
+   "id": "block-15",
+   "partida": "Albañilería",
+   "concepto": "Muro de block 15x20x40 junteado con mortero",
+   "unidad": "m²",
+   "cuadrilla": "c-alb",
+   "rend_min": 9,
+   "rend_max": 12,
+   "materiales": [
+    {
+     "id": "block-15x20x40",
+     "cant": 12.9
+    },
+    {
+     "id": "cemento-cpc30r-bulto",
+     "cant": 0.1
+    },
+    {
+     "id": "arena",
+     "cant": 0.014
+    }
+   ],
+   "equipo": [],
+   "nota": "Rango práctico de referencia en México por jornada de 8 h; calíbralo con tus datos de obra (ObraLab › calc-rendimiento)."
+  },
+  {
+   "id": "block-20",
+   "partida": "Albañilería",
+   "concepto": "Muro de block 20x20x40 junteado con mortero",
+   "unidad": "m²",
+   "cuadrilla": "c-alb",
+   "rend_min": 8,
+   "rend_max": 11,
+   "materiales": [],
+   "equipo": [],
+   "nota": "Rango práctico de referencia en México por jornada de 8 h; calíbralo con tus datos de obra (ObraLab › calc-rendimiento)."
+  },
+  {
+   "id": "castillo",
+   "partida": "Albañilería",
+   "concepto": "Castillo 15x15 armado, cimbrado y colado",
+   "unidad": "ml",
+   "cuadrilla": "c-alb",
+   "rend_min": 6,
+   "rend_max": 8,
+   "materiales": [
+    {
+     "id": "armex-15x15",
+     "cant": 0.175
+    },
+    {
+     "id": "cemento-cpc30r-bulto",
+     "cant": 0.17
+    },
+    {
+     "id": "arena",
+     "cant": 0.011
+    },
+    {
+     "id": "grava-3-4",
+     "cant": 0.015
+    }
+   ],
+   "equipo": [],
+   "nota": "Rango práctico de referencia en México por jornada de 8 h; calíbralo con tus datos de obra (ObraLab › calc-rendimiento)."
+  },
+  {
+   "id": "dala",
+   "partida": "Albañilería",
+   "concepto": "Dala o cadena 15x20 armada, cimbrada y colada",
+   "unidad": "ml",
+   "cuadrilla": "c-alb",
+   "rend_min": 6,
+   "rend_max": 8,
+   "materiales": [],
+   "equipo": [],
+   "nota": "Rango práctico de referencia en México por jornada de 8 h; calíbralo con tus datos de obra (ObraLab › calc-rendimiento)."
+  },
+  {
+   "id": "firme",
+   "partida": "Albañilería",
+   "concepto": "Firme de concreto de 10 cm acabado pulido",
+   "unidad": "m²",
+   "cuadrilla": "c-alb2",
+   "rend_min": 25,
+   "rend_max": 35,
+   "materiales": [
+    {
+     "id": "premezclado-200",
+     "cant": 0.105
+    },
+    {
+     "id": "malla-66-1010",
+     "cant": 1.05
+    }
+   ],
+   "equipo": [],
+   "nota": "Rango práctico de referencia en México por jornada de 8 h; calíbralo con tus datos de obra (ObraLab › calc-rendimiento)."
+  },
+  {
+   "id": "aplanado",
+   "partida": "Acabados",
+   "concepto": "Aplanado de mortero en muros, acabado fino",
+   "unidad": "m²",
+   "cuadrilla": "c-alb",
+   "rend_min": 10,
+   "rend_max": 14,
+   "materiales": [
+    {
+     "id": "cemento-cpc30r-bulto",
+     "cant": 0.15
+    },
+    {
+     "id": "cal-hidratada",
+     "cant": 0.05
+    },
+    {
+     "id": "arena",
+     "cant": 0.024
+    }
+   ],
+   "equipo": [],
+   "nota": "Rango práctico de referencia en México por jornada de 8 h; calíbralo con tus datos de obra (ObraLab › calc-rendimiento)."
+  },
+  {
+   "id": "yeso",
+   "partida": "Acabados",
+   "concepto": "Aplanado de yeso a regla en muros",
+   "unidad": "m²",
+   "cuadrilla": "c-alb",
+   "rend_min": 14,
+   "rend_max": 20,
+   "materiales": [],
+   "equipo": [],
+   "nota": "Rango práctico de referencia en México por jornada de 8 h; calíbralo con tus datos de obra (ObraLab › calc-rendimiento)."
+  },
+  {
+   "id": "tablaroca",
+   "partida": "Acabados",
+   "concepto": "Muro de tablaroca con bastidor, dos caras, cinta y redimix",
+   "unidad": "m²",
+   "cuadrilla": "c-yeso",
+   "rend_min": 12,
+   "rend_max": 18,
+   "materiales": [
+    {
+     "id": "tablaroca-hoja",
+     "cant": 0.705
+    }
+   ],
+   "equipo": [],
+   "nota": "Rango práctico de referencia en México por jornada de 8 h; calíbralo con tus datos de obra (ObraLab › calc-rendimiento)."
+  },
+  {
+   "id": "plafon",
+   "partida": "Acabados",
+   "concepto": "Plafón de tablaroca corrido",
+   "unidad": "m²",
+   "cuadrilla": "c-yeso",
+   "rend_min": 12,
+   "rend_max": 16,
+   "materiales": [],
+   "equipo": [],
+   "nota": "Rango práctico de referencia en México por jornada de 8 h; calíbralo con tus datos de obra (ObraLab › calc-rendimiento)."
+  },
+  {
+   "id": "piso-cer",
+   "partida": "Acabados",
+   "concepto": "Piso cerámico/porcelanato pegado con adhesivo y boquilla",
+   "unidad": "m²",
+   "cuadrilla": "c-piso",
+   "rend_min": 12,
+   "rend_max": 18,
+   "materiales": [],
+   "equipo": [],
+   "nota": "Rango práctico de referencia en México por jornada de 8 h; calíbralo con tus datos de obra (ObraLab › calc-rendimiento)."
+  },
+  {
+   "id": "azulejo",
+   "partida": "Acabados",
+   "concepto": "Azulejo en muros de baño y cocina",
+   "unidad": "m²",
+   "cuadrilla": "c-piso",
+   "rend_min": 8,
+   "rend_max": 12,
+   "materiales": [],
+   "equipo": [],
+   "nota": "Rango práctico de referencia en México por jornada de 8 h; calíbralo con tus datos de obra (ObraLab › calc-rendimiento)."
+  },
+  {
+   "id": "pintura",
+   "partida": "Acabados",
+   "concepto": "Pintura vinílica dos manos con sellador",
+   "unidad": "m²",
+   "cuadrilla": "c-pint",
+   "rend_min": 40,
+   "rend_max": 60,
+   "materiales": [],
+   "equipo": [],
+   "nota": "Rango práctico de referencia en México por jornada de 8 h; calíbralo con tus datos de obra (ObraLab › calc-rendimiento)."
+  },
+  {
+   "id": "imper",
+   "partida": "Acabados",
+   "concepto": "Impermeabilización con sistema prefabricado",
+   "unidad": "m²",
+   "cuadrilla": "c-imper",
+   "rend_min": 40,
+   "rend_max": 60,
+   "materiales": [],
+   "equipo": [],
+   "nota": "Rango práctico de referencia en México por jornada de 8 h; calíbralo con tus datos de obra (ObraLab › calc-rendimiento)."
+  },
+  {
+   "id": "salida-elec",
+   "partida": "Instalaciones",
+   "concepto": "Salida eléctrica (contacto o apagador) con tubería y cableado",
+   "unidad": "sal",
+   "cuadrilla": "c-elec",
+   "rend_min": 4,
+   "rend_max": 6,
+   "materiales": [],
+   "equipo": [],
+   "nota": "Rango práctico de referencia en México por jornada de 8 h; calíbralo con tus datos de obra (ObraLab › calc-rendimiento)."
+  },
+  {
+   "id": "salida-hid",
+   "partida": "Instalaciones",
+   "concepto": "Salida hidráulica o sanitaria por mueble",
+   "unidad": "sal",
+   "cuadrilla": "c-plom",
+   "rend_min": 2,
+   "rend_max": 3,
+   "materiales": [],
+   "equipo": [],
+   "nota": "Rango práctico de referencia en México por jornada de 8 h; calíbralo con tus datos de obra (ObraLab › calc-rendimiento)."
+  },
+  {
+   "id": "montaje-acero",
+   "partida": "Estructura",
+   "concepto": "Montaje y soldadura de acero estructural",
+   "unidad": "kg",
+   "cuadrilla": "c-montaje",
+   "rend_min": 1500,
+   "rend_max": 2500,
+   "materiales": [],
+   "equipo": [],
+   "nota": "Rango práctico de referencia en México por jornada de 8 h; calíbralo con tus datos de obra (ObraLab › calc-rendimiento)."
+  }
+ ],
+ "equipo": [
+  {
+   "id": "revolvedora",
+   "nombre": "Revolvedora de 1 saco",
+   "unidad": "jornada",
+   "min": 450,
+   "max": 650,
+   "nota": "Renta estimada Tijuana (Vértice, oct 2026); confirma con cotización."
+  },
+  {
+   "id": "vibrador",
+   "nombre": "Vibrador de chicote a gasolina",
+   "unidad": "jornada",
+   "min": 350,
+   "max": 500,
+   "nota": "Renta estimada Tijuana (Vértice, oct 2026); confirma con cotización."
+  },
+  {
+   "id": "bailarina",
+   "nombre": "Compactador de impacto (bailarina)",
+   "unidad": "jornada",
+   "min": 600,
+   "max": 850,
+   "nota": "Renta estimada Tijuana (Vértice, oct 2026); confirma con cotización."
+  },
+  {
+   "id": "andamio",
+   "nombre": "Andamio tubular (cuerpo de 1.5 m)",
+   "unidad": "jornada",
+   "min": 25,
+   "max": 45,
+   "nota": "Renta estimada Tijuana (Vértice, oct 2026); confirma con cotización."
+  },
+  {
+   "id": "retro",
+   "nombre": "Retroexcavadora con operador",
+   "unidad": "hora",
+   "min": 850,
+   "max": 1200,
+   "nota": "Renta estimada Tijuana (Vértice, oct 2026); confirma con cotización."
+  },
+  {
+   "id": "bomba-pluma",
+   "nombre": "Bomba de concreto con pluma (cargo por m³)",
+   "unidad": "m³",
+   "min": 280,
+   "max": 420,
+   "nota": "Renta estimada Tijuana (Vértice, oct 2026); confirma con cotización."
+  }
+ ],
+ "indirectos_tipicos": {
+  "oficina": [
+   4,
+   8
+  ],
+  "campo": [
+   5,
+   9
+  ],
+  "financiamiento": [
+   0.5,
+   2
+  ],
+  "utilidad": [
+   8,
+   15
+  ],
+  "cargos_adicionales": 0.5,
+  "nota": "Rangos típicos de obra privada en México, en % del costo directo. Cargos adicionales 0.5 % = derecho de inspección de obra pública (SFP); en obra privada suele ser 0."
+ },
+ "factor_regional": {
+  "tijuana": 10,
+  "rango": [
+   5,
+   15
+  ],
+  "nota": "Los precios nacionales de precios.json promedian CDMX, Monterrey, Guadalajara y Querétaro; el flete a Tijuana los mueve 5 a 15 %. Valor por omisión 10 %."
+ }
+}
