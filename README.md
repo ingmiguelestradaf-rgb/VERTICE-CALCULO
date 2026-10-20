@@ -7,6 +7,7 @@ Motor de cálculo de **Vértice Ingeniería, Arquitectura y Proyectos** (Tijuana
 - **Proyectos:** barra superior para crear, cambiar, duplicar, exportar e importar proyectos (archivo `.vertice.json`). Cada proyecto guarda todas sus pestañas en tu equipo.
 - **Cálculo:** trabe, columna (diagrama P-M), zapata, muros de mampostería, sismo estático, presupuesto con precios unitarios y programa con ruta crítica y flujo de caja.
 - **Arquitectura e instalaciones:** capturas los espacios de cada nivel y se dibujan plantas arquitectónicas (A-01), fachada y corte (A-02), instalación eléctrica con cuadro de cargas (IE-01) e hidrosanitaria con unidades mueble (IH-01), con vista previa en pantalla.
+- **Contratos y formatos:** contratos de obra (precio alzado, precios unitarios), subcontrato de obra especializada (REPSE) y renta de maquinaria conforme al Código Civil de B.C., y formatos en Excel de flujo de caja, estimaciones, control de obra, personal, maquinaria y cotización. Archivos y generadores en [`contratista-general/`](contratista-general/).
 - **Entregables:** descarga memoria de cálculo (.docx), planos E-01, E-02, A-01, A-02, IE-01 e IH-01 (.dxf para AutoCAD y .pdf) y presupuesto, APU y programa (.xlsx con fórmulas). Todo se genera en el navegador; nada se sube a un servidor.
 
 Los cálculos estructurales son los mismos que los del motor en Python.
