@@ -46,6 +46,7 @@ a{color:var(--link)}
 .tabs button[aria-selected="true"]{opacity:1;border-bottom-color:#e2a300}
 main.wrap{padding-block:18px 48px;display:grid;gap:16px}
 .panel{display:grid;gap:14px}
+a.btn{text-decoration:none;display:inline-block;text-align:center}
 .panel[hidden]{display:none}
 .intro{font-size:13.5px;color:var(--muted);max-width:80ch;margin:0}
 .grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:16px;align-items:start}
@@ -113,6 +114,7 @@ footer{font-size:12px;color:var(--muted);padding-bottom:24px}
       <button role="tab" data-p="programa" aria-selected="false">Programa y flujo</button>
       <button role="tab" data-p="arq" aria-selected="false">Arquitectura e instalaciones</button>
       <button role="tab" data-p="entregables" aria-selected="false">Entregables</button>
+      <button role="tab" data-p="contratista" aria-selected="false">Contratos y formatos</button>
     </nav>
   </div>
 </header>
@@ -313,6 +315,49 @@ footer{font-size:12px;color:var(--muted);padding-bottom:24px}
         <div class="small" id="e-status">Los planos se arman a escala en una hoja de 900 × 600 mm con tu cuadro de referencia; cada detalle lleva su escala.</div>
         <ul class="notes" id="e-check"></ul>
       </div>
+    </div>
+  </section>
+  <section class="panel" id="p-contratista" role="tabpanel" hidden>
+    <p class="intro">Contratos y formatos del contratista general con membrete Vértice. Los contratos siguen el Código Civil para el Estado de Baja California y la legislación federal laboral, fiscal y de seguridad social; son formatos para revisión de un abogado antes de firmar. Los Excel traen fórmulas: captura en las celdas amarillas.</p>
+    <div class="grid2">
+      <div class="card">
+        <h2 class="h">Contratos</h2>
+        <div class="toolbar" style="display:grid;gap:6px">
+          <a class="btn primary" href="contratista-general/assets/contratos/Contrato_Obra_Precio_Alzado.docx" download>Obra a precio alzado (.docx)</a>
+          <div class="small">Precio cerrado con proyecto completo; arts. 2489-2518 del Código Civil de B.C.</div>
+          <a class="btn primary" href="contratista-general/assets/contratos/Contrato_Obra_Precios_Unitarios.docx" download>Obra a precios unitarios (.docx)</a>
+          <div class="small">Estimaciones, ajuste de costos y conceptos fuera de catálogo.</div>
+          <a class="btn primary" href="contratista-general/assets/contratos/Subcontrato_Obra_Especializada.docx" download>Subcontrato de obra especializada (.docx)</a>
+          <div class="small">REPSE, documentación mensual IMSS/INFONAVIT/SAT y retención de pago (arts. 13-15 LFT).</div>
+          <a class="btn primary" href="contratista-general/assets/contratos/Contrato_Arrendamiento_Maquinaria.docx" download>Renta de maquinaria y equipo (.docx)</a>
+          <div class="small">Con o sin operador; horómetro, mínimos, fallas y seguros.</div>
+        </div>
+      </div>
+      <div class="card">
+        <h2 class="h">Formatos de control</h2>
+        <div class="toolbar" style="display:grid;gap:6px">
+          <a class="btn primary" href="contratista-general/assets/formatos/Flujo_de_Caja.xlsx" download>Flujo de caja semanal (.xlsx)</a>
+          <div class="small">Anticipo, estimaciones, retención y crédito de proveedores; proyectado contra real.</div>
+          <a class="btn primary" href="contratista-general/assets/formatos/Estimaciones.xlsx" download>Estimaciones con generadores (.xlsx)</a>
+          <div class="small">Catálogo, números generadores, carátula con IVA y reporte fotográfico.</div>
+          <a class="btn primary" href="contratista-general/assets/formatos/Control_de_Obra.xlsx" download>Control de obra (.xlsx)</a>
+          <div class="small">Curva S, SPI/CPI, reporte diario, órdenes de cambio, RFI y pruebas.</div>
+          <a class="btn primary" href="contratista-general/assets/formatos/Control_de_Personal.xlsx" download>Control de personal y REPSE (.xlsx)</a>
+          <div class="small">Plantilla, asistencia, horas extra, lista de raya con FSR y semáforo de subcontratistas.</div>
+          <a class="btn primary" href="contratista-general/assets/formatos/Control_de_Maquinaria.xlsx" download>Maquinaria propia y rentada (.xlsx)</a>
+          <div class="small">Inventario, uso diario, costo horario, conciliación de rentas y mantenimiento.</div>
+          <a class="btn primary" href="contratista-general/assets/formatos/Cotizacion.xlsx" download>Cotización con APU (.xlsx)</a>
+          <div class="small">Indirectos, análisis de costo directo, factor de sobrecosto y hoja para el cliente.</div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h2 class="h">Guías</h2>
+      <ul class="notes">
+        <li><a href="https://github.com/ingmiguelestradaf-rgb/VERTICE-CALCULO/blob/main/contratista-general/references/guia_contratos.md" target="_blank" rel="noopener">Qué contrato usar, datos que se piden y revisión de contratos del cliente</a></li>
+        <li><a href="https://github.com/ingmiguelestradaf-rgb/VERTICE-CALCULO/blob/main/contratista-general/references/marco_legal_bc.md" target="_blank" rel="noopener">Marco legal en Baja California (artículos, tasas y fuentes, verificado al 19-oct-2026)</a></li>
+        <li>Para contratos ya llenos con montos en letra y datos de la obra, pídeselo a Claude con el skill contratista-general-bc.</li>
+      </ul>
     </div>
   </section>
 </main>
