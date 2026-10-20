@@ -1,0 +1,105 @@
+{
+  "_instrucciones": "Copia este archivo, llénalo con los datos de la obra y pásalo a scripts/generar_contratos.js y scripts/generar_formatos.py. Todo campo vacío sale en el documento como línea para llenar a mano (________). Montos SIN IVA, en pesos. Porcentajes como número (8 = 8 %).",
+  "empresa": {
+    "nombre_comercial": "Vértice Ingeniería, Arquitectura y Proyectos",
+    "titular": "",
+    "tipo_persona": "física",
+    "rfc": "",
+    "domicilio": "",
+    "repse": "",
+    "registro_patronal": "",
+    "cedula_profesional": "",
+    "registro_dro": "",
+    "telefono": "",
+    "correo": "",
+    "banco": "",
+    "clabe": "",
+    "representante": "",
+    "escritura_poder": ""
+  },
+  "contraparte": {
+    "nombre": "Inmobiliaria Ejemplo, S.A. de C.V.",
+    "tipo_persona": "moral",
+    "rfc": "",
+    "domicilio": "",
+    "representante": "",
+    "escritura_constitutiva": "",
+    "escritura_poder": "",
+    "repse": "",
+    "registro_patronal": "",
+    "correo": "",
+    "telefono": ""
+  },
+  "obra": {
+    "nombre": "Adecuación de local comercial",
+    "ubicacion": "",
+    "municipio": "Tijuana, Baja California",
+    "descripcion": "Adecuación interior (fit-out) de local comercial de 180 m²: demoliciones menores, muros de tablaroca, plafones, instalaciones eléctricas e hidrosanitarias, pisos, pintura y limpieza final, conforme a planos y especificaciones del Anexo A.",
+    "licencia": "",
+    "dro": "",
+    "supervisor": ""
+  },
+  "contrato": {
+    "numero": "VIAP-2026-001",
+    "fecha_firma": "",
+    "lugar": "Tijuana, Baja California",
+    "monto": 1250000,
+    "iva_pct": 8,
+    "anticipo_pct": 30,
+    "fondo_garantia_pct": 5,
+    "fianza_anticipo": true,
+    "fianza_cumplimiento_pct": 10,
+    "fianza_vicios_pct": 10,
+    "vicios_meses": 12,
+    "plazo_dias": 60,
+    "fecha_inicio": "",
+    "fecha_termino": "",
+    "pena_diaria_pct": 0.1,
+    "pena_tope_pct": 10,
+    "periodo_estimacion": "quincenal",
+    "dias_revision": 5,
+    "dias_pago": 15,
+    "interes_moratorio_pct_mensual": 1.5,
+    "seguro_rc": 2000000,
+    "testigo_1": "",
+    "testigo_2": ""
+  },
+  "subcontrato": {
+    "especialidad": "Instalación eléctrica en baja tensión",
+    "trabajadores_aprox": 6,
+    "contrato_principal": "",
+    "dias_pago_tras_cobro": 5,
+    "dias_pago_maximo": 45,
+    "retencion_iva_aplica": false
+  },
+  "arrendamiento": {
+    "con_operador": true,
+    "plazo": "30 días naturales",
+    "combustible_a_cargo": "EL ARRENDATARIO",
+    "flete": 6500,
+    "deposito": 15000,
+    "horas_minimas_mes": 176,
+    "equipos": [
+      {
+        "descripcion": "Retroexcavadora 4x4",
+        "marca": "",
+        "modelo": "",
+        "serie": "",
+        "horometro": "",
+        "tarifa": 950,
+        "unidad": "hora",
+        "minimo": "8 horas por día de servicio"
+      },
+      {
+        "descripcion": "Compactador de impacto (bailarina)",
+        "marca": "",
+        "modelo": "",
+        "serie": "",
+        "horometro": "",
+        "tarifa": 700,
+        "unidad": "jornada",
+        "minimo": "1 jornada"
+      }
+    ]
+  }
+}
